@@ -1,0 +1,334 @@
+<div class="container mt-4">
+  <!-- En-tête améliorée -->
+  <div class="d-flex align-items-center mb-4">
+    <button class="btn btn-light rounded-circle p-2 me-3" (click)="goBack()" style="width: 42px; height: 42px;">
+      <i class="fas fa-arrow-left"></i>
+    </button>
+    <div>
+      <h2 class="mb-0 text-dark fw-bold">Détails de la commande #{{commande?.id}}</h2>
+      <p class="text-muted mb-0">Commandé le {{commande?.created_at | date:'dd/MM/yyyy à HH:mm'}}</p>
+    </div>
+  </div>
+
+  <!-- Carte de statut améliorée -->
+  <div class="card border-0 shadow-sm mb-4" style="border-radius: 16px;">
+    <div class="card-body p-4">
+      <div class="row align-items-center">
+        <div class="col-md-6">
+          <div class="d-flex align-items-center">
+            <div class="bg-primary bg-opacity-10 rounded-circle p-3 me-3 d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+              <i class="fas fa-receipt fa-lg text-primary"></i>
+            </div>
+            <div>
+              <p class="text-muted mb-1">Statut de la commande</p>
+              <span class="badge rounded-pill fs-6 py-2 px-3 fw-medium"
+                [ngClass]="{
+                  'bg-warning text-dark': commande?.statut === 'en_attente',
+                  'bg-info': commande?.statut === 'en_preparation',
+                  'bg-primary': commande?.statut === 'prete',
+                  'bg-primary bg-opacity-75': commande?.statut === 'en_livraison',
+                  'bg-success': commande?.statut === 'livree',
+                  'bg-danger': commande?.statut === 'annulee'
+                }">
+                <i class="fas {{ getStatutIcon(commande?.statut) }} me-1"></i>
+                {{ getStatutText(commande?.statut) }}
+              </span>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6 text-md-end mt-3 mt-md-0">
+          <div class="d-flex flex-column flex-md-row justify-content-md-end gap-2">
+            <button class="btn btn-primary d-flex align-items-center gap-2" (click)="telechargerFacture(commande.id)">
+              <i class="fas fa-file-invoice"></i> Télécharger la facture
+            </button>
+            <!-- Bouton Annuler -->
+<button *ngIf="canCancelOrder()"
+        class="btn btn-outline-danger d-flex align-items-center gap-2"
+        (click)="openCancelConfirm()">
+  <i class="fas fa-times-circle"></i> Annuler
+</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <!-- Colonne gauche: Informations de la commande -->
+    <div class="col-lg-8">
+      <!-- Articles de la commande - Design amélioré -->
+      <div class="card border-0 shadow-sm mb-4" style="border-radius: 16px; overflow: hidden;">
+        <div class="card-header bg-transparent border-0 py-3">
+          <h5 class="mb-0 fw-bold text-dark"><i class="fas fa-boxes me-2 text-primary"></i>Articles commandés</h5>
+        </div>
+        <div class="card-body p-0">
+          <div class="table-responsive">
+            <table class="table align-middle mb-0">
+              <thead class="table-light">
+                <tr>
+                  <th class="ps-4 py-3 fw-semibold text-muted" style="font-size: 0.9rem;">Produit</th>
+                  <th class="text-end py-3 fw-semibold text-muted" style="font-size: 0.9rem;">Prix unitaire</th>
+                  <th class="text-center py-3 fw-semibold text-muted" style="font-size: 0.9rem;">Quantité</th>
+                  <th class="text-end pe-4 py-3 fw-semibold text-muted" style="font-size: 0.9rem;">Total</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let detail of detailsCommande" class="border-bottom">
+                  <td class="ps-4 py-3">
+                    <div class="d-flex align-items-center">
+                      <div class="bg-light rounded me-3 d-flex align-items-center justify-content-center"
+                           style="width: 50px; height: 50px;">
+                        <i class="fas fa-{{ detail.produit ? 'box' : 'gift' }} text-muted"></i>
+                      </div>
+                      <div>
+                        <div class="fw-semibold">{{detail.produit?.nom || detail.pack?.nom}}</div>
+                        <small class="text-muted" *ngIf="detail.promotion_appliquee">
+                          <i class="fas fa-tag me-1 text-success"></i>Promotion appliquée
+                        </small>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="text-end py-3">{{detail.prix_unitaire | number}} FCFA</td>
+                  <td class="text-center py-3">{{detail.quantite}}</td>
+                  <td class="text-end fw-semibold pe-4 py-3">{{detail.prix_unitaire * detail.quantite | number}} FCFA</td>
+                </tr>
+              </tbody>
+              <tfoot class="table-light">
+                <tr>
+                  <td colspan="3" class="text-end fw-bold ps-4 py-3">Total:</td>
+                  <td class="text-end fw-bold pe-4 py-3 fs-5 text-primary">{{commande?.total | number}} FCFA</td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Informations de livraison améliorées -->
+      <div class="card border-0 shadow-sm mb-4" style="border-radius: 16px;" *ngIf="commande?.adresse_livraison">
+        <div class="card-header bg-transparent border-0 py-3">
+          <h5 class="mb-0 fw-bold text-dark"><i class="fas fa-truck me-2 text-primary"></i>Informations de livraison</h5>
+        </div>
+        <div class="card-body">
+          <div class="d-flex align-items-start mb-3">
+            <div class="bg-light rounded-circle p-2 me-3 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+              <i class="fas fa-map-marker-alt text-primary"></i>
+            </div>
+            <div>
+              <h6 class="mb-1 fw-semibold">Adresse de livraison</h6>
+              <p class="mb-0">{{commande.adresse_livraison}}</p>
+            </div>
+          </div>
+
+          <div *ngIf="commande.transporteur || commande.numero_suivi" class="mt-4 pt-3 border-top">
+            <h6 class="mb-3 fw-semibold">Suivi de colis</h6>
+            <div class="row">
+              <div class="col-sm-6 mb-2" *ngIf="commande.transporteur">
+                <div class="d-flex align-items-center">
+                  <span class="text-muted me-2" style="min-width: 110px;">Transporteur:</span>
+                  <span class="fw-medium">{{commande.transporteur}}</span>
+                </div>
+              </div>
+              <div class="col-sm-6 mb-2" *ngIf="commande.numero_suivi">
+                <div class="d-flex align-items-center">
+                  <span class="text-muted me-2" style="min-width: 110px;">N° de suivi:</span>
+                  <span class="fw-medium">{{commande.numero_suivi}}</span>
+                </div>
+              </div>
+              <div class="col-sm-6 mb-2" *ngIf="commande.estimation_livraison">
+                <div class="d-flex align-items-center">
+                  <span class="text-muted me-2" style="min-width: 110px;">Estimation:</span>
+                  <span class="fw-medium">{{commande.estimation_livraison | date:'dd/MM/yyyy'}}</span>
+                </div>
+              </div>
+              <div class="col-sm-6 mb-2" *ngIf="commande.date_livraison">
+                <div class="d-flex align-items-center">
+                  <span class="text-muted me-2" style="min-width: 110px;">Livré le:</span>
+                  <span class="fw-medium">{{commande.date_livraison | date:'dd/MM/yyyy'}}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Colonne droite: Informations de paiement et statut -->
+    <div class="col-lg-4">
+      <!-- Informations de paiement améliorées -->
+      <div class="card border-0 shadow-sm mb-4" style="border-radius: 16px;">
+        <div class="card-header bg-transparent border-0 py-3">
+          <h5 class="mb-0 fw-bold text-dark"><i class="fas fa-credit-card me-2 text-primary"></i>Informations de paiement</h5>
+        </div>
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom">
+            <span class="text-muted">Mode de paiement:</span>
+            <span class="badge bg-gray-100 bg-opacity-10 text-secondary px-3 py-2 rounded-pill">
+              {{ getModePaiementText(commande?.mode_paiement) }}
+            </span>
+          </div>
+          <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom">
+            <span class="text-muted">Statut du paiement:</span>
+            <span class="badge px-3 py-2  text-white rounded-pill" [ngClass]="{
+              'bg-success bg-opacity-10 text-success': commande?.facture?.statut === 'payee',
+              'bg-warning bg-opacity-10 text-warning': commande?.facture?.statut === 'non_payee'
+            }">
+              {{ commande?.facture?.statut === 'payee' ? 'Payé' : 'Non payé' }}
+            </span>
+          </div>
+          <div class="d-flex justify-content-between align-items-center" *ngIf="commande?.facture">
+            <span class="text-muted">N° de facture:</span>
+            <span class="fw-medium">{{commande.facture.numero_facture}}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Chronologie de la commande améliorée -->
+      <div class="card border-0 shadow-sm mb-4" style="border-radius: 16px;">
+        <div class="card-header bg-transparent border-0 py-3">
+          <h5 class="mb-0 fw-bold text-dark"><i class="fas fa-history me-2 text-primary"></i>Suivi de commande</h5>
+        </div>
+        <div class="card-body">
+          <div class="timeline">
+            <div class="timeline-item" [class.active]="isStatusActive('en_attente')">
+              <div class="timeline-point">
+                <i class="fas fa-shopping-cart"></i>
+              </div>
+              <div class="timeline-content">
+                <h6 class="mb-0 fw-semibold">Commande passée</h6>
+                <small class="text-muted">{{commande?.created_at | date:'dd/MM/yyyy à HH:mm'}}</small>
+              </div>
+            </div>
+            <div class="timeline-item" [class.active]="isStatusActive('en_preparation')">
+              <div class="timeline-point">
+                <i class="fas fa-utensils"></i>
+              </div>
+              <div class="timeline-content">
+                <h6 class="mb-0 fw-semibold">En préparation</h6>
+                <small class="text-muted" *ngIf="commande?.statut !== 'en_attente'">En cours</small>
+              </div>
+            </div>
+            <div class="timeline-item" [class.active]="isStatusActive('prete')">
+              <div class="timeline-point">
+                <i class="fas fa-check-circle"></i>
+              </div>
+              <div class="timeline-content">
+                <h6 class="mb-0 fw-semibold">Prête pour livraison</h6>
+              </div>
+            </div>
+            <div class="timeline-item" [class.active]="isStatusActive('en_livraison')">
+              <div class="timeline-point">
+                <i class="fas fa-truck"></i>
+              </div>
+              <div class="timeline-content">
+                <h6 class="mb-0 fw-semibold">En cours de livraison</h6>
+              </div>
+            </div>
+            <div class="timeline-item" [class.active]="isStatusActive('livree')">
+              <div class="timeline-point">
+                <i class="fas fa-home"></i>
+              </div>
+              <div class="timeline-content">
+                <h6 class="mb-0 fw-semibold">Livrée</h6>
+                <small class="text-muted" *ngIf="commande?.date_livraison">
+                  {{commande.date_livraison | date:'dd/MM/yyyy'}}
+                </small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Conditions d'annulation améliorées -->
+      <div class="card border-warning border-0 shadow-sm mb-4" style="border-radius: 16px;">
+        <div class="card-header bg-warning bg-opacity-10 border-0 py-3">
+          <h5 class="mb-0 fw-bold text-dark"><i class="fas fa-info-circle me-2 text-warning"></i>Conditions d'annulation</h5>
+        </div>
+        <div class="card-body">
+          <p class="small mb-3">Vous pouvez annuler votre commande uniquement si elle est encore <strong>en attente</strong> de traitement.</p>
+
+          <div class="alert alert-warning small mb-0 border-0 bg-warning bg-opacity-10">
+            <i class="fas fa-exclamation-triangle me-2"></i>
+            <strong>Attention:</strong> Une fois que la préparation a commencé, l'annulation n'est plus possible.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+ <!-- Modal d'annulation avec classe supplémentaire -->
+<!-- Bloc de confirmation (remplace le modal) -->
+<div *ngIf="showCancelConfirm" class="card border-0 shadow-sm mt-3">
+  <div class="card-body">
+    <div class="alert alert-warning d-flex align-items-center mb-3">
+      <i class="fas fa-exclamation-triangle me-2 text-warning"></i>
+      <span>Êtes-vous sûr de vouloir annuler la commande #{{commande?.id}} ?</span>
+    </div>
+
+    <p class="mb-3">Cette action est irréversible. Les articles annulés seront remis en stock.</p>
+
+    <div class="mb-3">
+      <label for="cancelReason" class="form-label fw-medium">Raison de l'annulation (optionnel)</label>
+      <textarea class="form-control" id="cancelReason" rows="3"
+                [(ngModel)]="cancelReason"
+                placeholder="Pourquoi souhaitez-vous annuler cette commande ?"></textarea>
+    </div>
+
+    <div class="d-flex justify-content-end gap-2">
+      <button class="btn btn-light rounded-pill px-4" (click)="closeCancelConfirm()">Retour</button>
+      <button class="btn btn-danger rounded-pill px-4 d-flex align-items-center gap-2"
+              (click)="annulerCommande()">
+        <i class="fas fa-times-circle"></i> Confirmer l'annulation
+      </button>
+    </div>
+  </div>
+</div>
+
+
+<style>
+  /* SOLUTION DÉFINITIVE POUR LE FLOU DU MODAL */
+  .modal-backdrop {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    background-color: rgba(0, 0, 0, 0.5) !important;
+    opacity: 1 !important;
+  }
+
+  body.modal-open {
+    overflow: auto !important;
+    padding-right: 0 !important;
+  }
+
+  .modal {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+
+  /* Réinitialisation des styles Bootstrap problématiques */
+  .modal-backdrop.show {
+    opacity: 0.5 !important;
+  }
+
+  /* Assurez-vous que le modal est au-dessus de tout */
+  .modal {
+    z-index: 1060;
+  }
+
+  .modal-backdrop {
+    z-index: 1050;
+  }
+
+  /* [Vos autres styles existants] */
+  body {
+    background-color: #f8f9fa;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  }
+
+  .card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    border-radius: 16px;
+  }
+
+  /* ... reste de vos styles ... */
+</style>

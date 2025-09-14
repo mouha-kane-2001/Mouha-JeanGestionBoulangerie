@@ -1,0 +1,140 @@
+<div class="container mt-4">
+  <div class="card shadow-lg border-0 rounded-4 overflow-hidden">
+
+    <!-- En-tête de la carte -->
+    <div class="card-header bg-gradient-primary text-white d-flex justify-content-between align-items-center p-4">
+      <div>
+        <h4 class="mb-0 fw-bold">
+          <i class="bi bi-people-fill me-2"></i> Gestion des utilisateurs
+        </h4>
+        <p class="mb-0 opacity-75 mt-1">Gérez les comptes et les permissions des utilisateurs</p>
+      </div>
+      <div class="d-flex gap-2">
+        <button class="btn btn-light btn-sm fw-semibold d-flex align-items-center" (click)="chargerUtilisateurs()">
+          <i class="bi bi-arrow-clockwise me-1"></i> Actualiser
+        </button>
+        <a routerLink="/admin/utilisateurs/ajouter" class="btn btn-success btn-sm fw-semibold d-flex align-items-center">
+          <i class="bi bi-plus-circle me-1"></i> Nouvel utilisateur
+        </a>
+      </div>
+    </div>
+
+    <!-- Barre de filtres -->
+    <div class="p-4 border-bottom bg-light">
+      <div class="row g-3 align-items-end">
+        <div class="col-md-4">
+          <label for="roleSelect" class="form-label fw-semibold">Filtrer par rôle</label>
+          <select id="roleSelect" class="form-select form-select-sm"
+                  [(ngModel)]="selectedRole"
+                  (change)="filtrerParRole()">
+            <option value="ALL">Tous les rôles</option>
+            <option value="ADMIN">Administrateur</option>
+            <option value="CLIENT">Client</option>
+            <option value="GESTIONNAIRE">Gestionnaire</option>
+            <option value="LIVREUR">Livreur</option>
+          </select>
+        </div>
+        <div class="col-md-5">
+          <label class="form-label fw-semibold">Statistiques</label>
+          <div class="d-flex gap-3">
+            <span class="badge bg-primary-subtle text-primary p-2">
+              <i class="bi bi-people me-1"></i> Total: {{allUtilisateurs.length}}
+            </span>
+            <span class="badge bg-info-subtle text-info p-2" *ngIf="selectedRole !== 'ALL'">
+              Filtre: {{utilisateurs.length}}
+            </span>
+          </div>
+        </div>
+        <div class="col-md-3 text-md-end">
+          <button class="btn btn-outline-secondary btn-sm"  >
+            <i class="bi bi-download me-1"></i> Exporter
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tableau des utilisateurs -->
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+          <thead class="table-light">
+            <tr>
+              <th class="ps-4">#</th>
+              <th>Utilisateur</th>
+              <th>Contact</th>
+              <th>Rôle</th>
+              <th class="text-center">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let u of utilisateurs; let i = index" class="user-row">
+              <td class="ps-4 fw-semibold">{{ i + 1 }}</td>
+              <td>
+                <div class="d-flex align-items-center">
+                  <div class="avatar-placeholder bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-3">
+                    {{ u.prenom?.charAt(0) || 'U' }}{{ u.nom?.charAt(0) || '' }}
+                  </div>
+                  <div>
+                    <div class="fw-semibold">{{ u.prenom || '—' }} {{ u.nom || '—' }}</div>
+                    <small class="text-muted">ID: {{ u.id }}</small>
+                  </div>
+                </div>
+              </td>
+              <td>
+                <div><i class="bi bi-envelope me-2 text-primary"></i> {{ u.email || '—' }}</div>
+                <div><i class="bi bi-telephone me-2 text-success"></i> {{ u.telephone || 'Non renseigné' }}</div>
+              </td>
+              <td>
+                <select class="form-select form-select-sm role-select"
+                        [class.bg-admin]="u.role === 'ADMIN'"
+                        [class.bg-client]="u.role === 'CLIENT'"
+                        [class.bg-gestionnaire]="u.role === 'GESTIONNAIRE'"
+                        [class.bg-livreur]="u.role === 'LIVREUR'"
+                        [(ngModel)]="u.role"
+                        (change)="changeUserRole(u, u.role)">
+                  <option value="ADMIN">Administrateur</option>
+                  <option value="CLIENT">Client</option>
+                  <option value="GESTIONNAIRE">Gestionnaire</option>
+                  <option value="LIVREUR">Livreur</option>
+                </select>
+              </td>
+              <td class="text-center">
+                <div class="btn-group btn-group-sm">
+                  <button class="btn btn-outline-primary" title="Modifier" (click)="modifierUtilisateur(u)">
+                    <i class="bi bi-pencil"></i>
+                  </button>
+                  <button class="btn btn-outline-danger" title="Supprimer" (click)="supprimerUtilisateur(u.id)">
+                    <i class="bi bi-trash"></i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+
+            <tr *ngIf="utilisateurs.length === 0">
+              <td colspan="5" class="text-center text-muted p-5">
+                <i class="bi bi-people display-4 d-block mb-3"></i>
+                <h5>Aucun utilisateur trouvé</h5>
+                <p class="mb-0">Aucun utilisateur ne correspond à vos critères de filtrage.</p>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Pied de tableau -->
+    <div class="card-footer bg-light d-flex justify-content-between align-items-center p-3">
+      <div class="text-muted small">
+        Affichage de {{utilisateurs.length}} utilisateur(s)
+      </div>
+      <div>
+        <span class="badge bg-admin me-2">Admin</span>
+        <span class="badge bg-client me-2">Client</span>
+        <span class="badge bg-gestionnaire me-2">Gestionnaire</span>
+        <span class="badge bg-livreur me-2">Livreur</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+

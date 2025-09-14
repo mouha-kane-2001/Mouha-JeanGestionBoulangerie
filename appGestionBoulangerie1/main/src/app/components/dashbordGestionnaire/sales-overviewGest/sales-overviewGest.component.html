@@ -1,0 +1,108 @@
+<div class="dashboard-employe">
+  <!-- Header -->
+  <div class="dashboard-header">
+    <h1 class="dashboard-title">
+      <i class="fas fa-chart-line title-icon"></i>
+      Tableau de Bord Employé
+    </h1>
+    <button class="refresh-btn" (click)="rafraichir()" [disabled]="loading">
+      <i class="fas fa-sync-alt"></i>
+      Actualiser
+    </button>
+  </div>
+
+  <!-- Chargement -->
+  <div *ngIf="loading" class="loading-state">
+    <div class="loading-content">
+      <div class="spinner"></div>
+      <span class="loading-text">Chargement des indicateurs...</span>
+    </div>
+  </div>
+
+  <!-- Indicateurs -->
+  <div *ngIf="!loading && !error" class="dashboard-grid">
+    <!-- Commandes à préparer -->
+    <div class="stat-card card-pending">
+      <div class="card-content">
+        <div class="card-icon">
+          <i class="fas fa-clock"></i>
+        </div>
+        <div class="card-text">
+          <div class="stat-value">{{ indicateurs.commandesAPreparer }}</div>
+          <div class="stat-label">Commandes à préparer</div>
+          <div class="stat-subtitle">Nouvelles commandes</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Commandes en préparation -->
+    <div class="stat-card card-preparing">
+      <div class="card-content">
+        <div class="card-icon">
+          <i class="fas fa-utensils"></i>
+        </div>
+        <div class="card-text">
+          <div class="stat-value">{{ indicateurs.commandesEnPreparation }}</div>
+          <div class="stat-label">En préparation</div>
+          <div class="stat-subtitle">Commandes en cours</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Commandes en livraison -->
+    <div class="stat-card card-delivering">
+      <div class="card-content">
+        <div class="card-icon">
+          <i class="fas fa-truck"></i>
+        </div>
+        <div class="card-text">
+          <div class="stat-value">{{ indicateurs.commandesEnLivraison }}</div>
+          <div class="stat-label">En livraison</div>
+          <div class="stat-subtitle">En route vers les clients</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Commandes livrées aujourd'hui -->
+    <div class="stat-card card-delivered">
+      <div class="card-content">
+        <div class="card-icon">
+          <i class="fas fa-check-circle"></i>
+        </div>
+        <div class="card-text">
+          <div class="stat-value">{{ indicateurs.commandesLivreesAujourdhui }}</div>
+          <div class="stat-label">Livrées aujourd'hui</div>
+          <div class="stat-subtitle">Commandes terminées</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Commandes urgentes -->
+    <div class="stat-card card-urgent">
+      <div class="card-content">
+        <div class="card-icon">
+          <i class="fas fa-exclamation-triangle"></i>
+        </div>
+        <div class="card-text">
+          <div class="stat-value">{{ indicateurs.commandesUrgentes }}</div>
+          <div class="stat-label">Commandes urgentes</div>
+          <div class="stat-subtitle">À traiter en priorité</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Erreur -->
+  <div *ngIf="error" class="error-state">
+    <div class="error-content">
+      <i class="fas fa-exclamation-circle error-icon"></i>
+      <div class="error-text">
+        <h3>Erreur de chargement</h3>
+        <p>{{ error }}</p>
+      </div>
+      <button class="retry-btn" (click)="rafraichir()">
+        Réessayer
+      </button>
+    </div>
+  </div>
+</div>

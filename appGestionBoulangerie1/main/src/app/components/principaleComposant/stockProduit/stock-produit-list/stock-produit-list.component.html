@@ -1,0 +1,29 @@
+<div class="card p-4">
+  <h2 class="text-lg font-bold mb-3">Liste des stocks</h2>
+
+  <p *ngIf="loading">Chargement...</p>
+  <p class="text-danger" *ngIf="errorMessage">{{ errorMessage }}</p>
+
+  <table class="table table-striped" *ngIf="!loading && produits.length > 0">
+    <thead>
+      <tr>
+        <th>Produit</th>
+        <th>Catégorie ID</th>
+        <th>Prix</th>
+        <th>Stock disponible</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let produit of produits">
+        <td>{{ produit.nom }}</td>
+  <td>{{ produit.categorie?.nom || '—' }}</td>
+        <td>{{ produit.prix | currency:'FRANC CFA' }}</td>
+        <td [ngClass]="{'text-danger': produit.stock === 0, 'text-success': produit.stock > 0}">
+          {{ produit.stock }}
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p *ngIf="!loading && produits.length === 0">Aucun produit trouvé.</p>
+</div>

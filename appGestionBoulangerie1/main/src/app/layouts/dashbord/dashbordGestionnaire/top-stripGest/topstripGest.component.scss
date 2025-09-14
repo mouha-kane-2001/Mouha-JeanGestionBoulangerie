@@ -1,0 +1,118 @@
+// Variables de couleurs grises
+$gray-50: #f9fafb;
+$gray-100: #f3f4f6;
+$gray-200: #e5e7eb;
+$gray-300: #d1d5db;
+$gray-400: #9ca3af;
+$gray-500: #6b7280;
+$gray-600: #4b5563;
+$gray-700: #374151;
+$gray-800: #1f2937;
+$gray-900: #111827;
+
+// Version grise de la top strip
+.app-topstrip {
+  background: linear-gradient(135deg, $gray-600, $gray-700,$gray-900) !important;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+  padding: 12px 24px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.linkbar a.link-hover {
+  transition: all 0.3s ease;
+  border-radius: 6px;
+  padding: 8px 12px;
+  color: $gray-100;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+    transform: translateY(-2px);
+  }
+}
+
+// Version grise du gradient text
+.text-linear-gradient {
+  background: linear-gradient(45deg, $gray-400, $gray-500);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: 600;
+  letter-spacing: 1px;
+}
+
+// Version grise du bouton live preview
+.live-preview-drop {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  transition: all 0.3s ease;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: $gray-100;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+  }
+}
+
+// Version grise du bouton pro
+.get-pro-btn {
+  background: linear-gradient(45deg, $gray-700, $gray-800) !important;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px rgba($gray-700, 0.3);
+  color: white;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba($gray-700, 0.4);
+  }
+}
+
+// Styles pour le menu déroulant - version grise
+.mat-menu-panel {
+  border-radius: 12px !important;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: $gray-800 !important;
+}
+
+.mat-menu-item {
+  color: $gray-100 !important;
+  transition: all 0.3s ease;
+  border-radius: 8px;
+  margin: 4px 8px;
+  width: auto;
+
+  &:hover {
+    background: rgba($gray-600, 0.3) !important;
+    transform: translateX(5px);
+  }
+}
+
+// Animation pour les icônes
+.iconify {
+  transition: transform 0.3s ease;
+}
+
+.link-hover:hover .iconify,
+.live-preview-drop:hover .iconify,
+.get-pro-btn:hover .iconify {
+  transform: scale(1.2);
+}
+
+// Responsive design
+@media (max-width: 768px) {
+  .app-topstrip {
+    padding: 10px 16px;
+  }
+
+  .text-linear-gradient {
+    font-size: 12px !important;
+  }
+
+  .live-preview-drop, .get-pro-btn {
+    padding: 6px 12px !important;
+    font-size: 14px !important;
+  }
+}

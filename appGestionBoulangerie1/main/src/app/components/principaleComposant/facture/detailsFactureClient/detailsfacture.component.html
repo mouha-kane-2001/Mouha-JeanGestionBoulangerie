@@ -1,0 +1,123 @@
+<div class="container mt-4" *ngIf="!loading && facture">
+  <div class="card shadow-lg border-0">
+    <!-- En-tête de la facture -->
+    <div class="card-header py-4" style="background: linear-gradient(135deg, #2c5cc5, #3b82f6);">
+      <div class="d-flex justify-content-between align-items-center text-white">
+        <div>
+          <h2 class="mb-1"><i class="bi bi-receipt me-2"></i>Facture #{{facture.numero_facture}}</h2>
+          <p class="mb-0 opacity-90">Détails de votre facture</p>
+        </div>
+        <button class="btn btn-light" (click)="telechargerFacture(facture.id)">
+          <i class="bi bi-download me-1"></i> Télécharger
+        </button>
+      </div>
+    </div>
+
+    <div class="card-body">
+      <!-- Informations principales -->
+      <div class="row mb-4">
+        <div class="col-md-6">
+          <div class="d-flex align-items-center mb-3">
+            <div class="bg-light rounded-circle p-3 me-3">
+              <i class="bi bi-calendar-event text-primary" style="font-size: 1.2rem;"></i>
+            </div>
+            <div>
+              <p class="mb-0 text-muted">Date d'émission</p>
+              <p class="mb-0 fw-semibold">{{facture.date_emission | date:'dd/MM/yyyy'}}</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="d-flex align-items-center mb-3">
+            <div class="bg-light rounded-circle p-3 me-3">
+              <i class="bi bi-currency-exchange text-primary" style="font-size: 1.2rem;"></i>
+            </div>
+            <div>
+              <p class="mb-0 text-muted">Montant total</p>
+              <p class="mb-0 fw-semibold fs-5 text-primary">{{facture.montant_total | number}} FCFA</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tableau des produits -->
+      <div class="mt-4">
+        <h5 class="mb-3 d-flex align-items-center">
+          <i class="bi bi-list-check me-2 text-primary"></i>
+          <span>Détails des articles</span>
+        </h5>
+
+        <div class="table-responsive">
+          <table class="table table-hover">
+            <thead class="table-light">
+              <tr>
+                <th class="ps-4">Produit / Pack</th>
+                <th>Prix unitaire</th>
+                <th>Quantité</th>
+                <th class="text-end pe-4">Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let d of facture.details_facture">
+                <td class="ps-4">
+                  <div class="d-flex align-items-center">
+                    <div class="bg-light rounded p-2 me-3">
+                      <i class="bi bi-box-seam text-primary"></i>
+                    </div>
+                    <div>
+                      <p class="mb-0 fw-semibold">{{d.produit?.nom || d.pack?.nom}}</p>
+                    </div>
+                  </div>
+                </td>
+                <td>{{d.prix_unitaire | number}} FCFA</td>
+                <td>
+                  <span class="badge bg-secondary rounded-pill">{{d.quantite}}</span>
+                </td>
+                <td class="text-end pe-4 fw-semibold">{{getTotalLigne(d) | number}} FCFA</td>
+              </tr>
+            </tbody>
+            <tfoot class="table-group-divider">
+              <tr>
+                <td colspan="3" class="text-end fw-bold ps-4">Total général</td>
+                <td class="text-end pe-4 fw-bold fs-5 text-primary">{{facture.montant_total | number}} FCFA</td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pied de page -->
+    <div class="card-footer bg-light py-3">
+      <div class="d-flex justify-content-between align-items-center">
+        <small class="text-muted">Merci pour votre confiance</small>
+        <button class="btn btn-outline-primary btn-sm" (click)="telechargerFacture(facture.id)">
+          <i class="bi bi-download me-1"></i> Télécharger la facture
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- États de chargement et d'erreur -->
+<div *ngIf="loading" class="container mt-4">
+  <div class="card shadow-sm border-0">
+    <div class="card-body py-5 text-center">
+      <div class="spinner-border text-primary mb-3" role="status"></div>
+      <p class="text-muted mb-0">Chargement des détails de la facture...</p>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="!loading && !facture" class="container mt-4">
+  <div class="card border-0 shadow-sm">
+    <div class="card-body py-5 text-center">
+      <i class="bi bi-exclamation-triangle display-4 text-warning mb-3"></i>
+      <h5 class="text-warning">Facture introuvable</h5>
+      <p class="text-muted">La facture que vous recherchez n'a pas été trouvée.</p>
+      <button class="btn btn-primary mt-2" routerLink="/factures">
+        <i class="bi bi-arrow-left me-1"></i> Retour aux factures
+      </button>
+    </div>
+  </div>
+</div>

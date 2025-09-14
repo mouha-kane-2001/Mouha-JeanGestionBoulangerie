@@ -1,0 +1,44 @@
+<div class="card p-4">
+  <h2 class="text-lg font-bold mb-3">Mise à jour du stock</h2>
+
+  <form [formGroup]="stockForm" (ngSubmit)="onSubmit()">
+
+    <!-- Choix du produit -->
+    <div class="mb-3">
+      <label for="produitId">Produit</label>
+      <select id="produitId" formControlName="produitId" class="form-control">
+        <option value="">-- Sélectionner --</option>
+        <option *ngFor="let produit of produits" [value]="produit.id">
+          {{ produit.nom }}
+        </option>
+      </select>
+    </div>
+
+    <!-- Stock actuel readonly -->
+    <div class="mb-3">
+      <label for="stockActuel">Stock actuel</label>
+      <input type="number" id="stockActuel" formControlName="stockActuel" class="form-control" readonly />
+    </div>
+
+    <!-- Sélection de l'opération -->
+    <div class="mb-3">
+      <label for="operation">Opération</label>
+      <select id="operation" formControlName="operation" class="form-control">
+        <option value="increase">Augmenter</option>
+        <option value="decrease">Diminuer</option>
+      </select>
+    </div>
+
+    <!-- Quantité -->
+    <div class="mb-3">
+      <label for="quantite">Quantité</label>
+      <input type="number" id="quantite" formControlName="quantite" class="form-control" min="1" />
+    </div>
+
+    <button type="submit" class="btn btn-primary" [disabled]="stockForm.invalid">
+      Mettre à jour
+    </button>
+  </form>
+
+  <p class="mt-3 text-success" *ngIf="message">{{ message }}</p>
+</div>

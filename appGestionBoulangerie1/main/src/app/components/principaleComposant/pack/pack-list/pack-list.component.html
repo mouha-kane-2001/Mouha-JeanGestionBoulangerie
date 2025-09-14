@@ -1,0 +1,38 @@
+<div class="container mt-5">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Liste des packs</h2>
+    <button class="btn btn-primary" routerLink="/admin/pack/ajouter">+ Nouveau pack</button>
+  </div>
+
+  <div class="row g-3">
+    <div *ngFor="let pack of packs" class="col-md-6">
+      <div class="card h-100 shadow-sm">
+        <!-- Affichage de la photo si elle existe -->
+        <img *ngIf="pack.photo" [src]="'http://localhost:8000/storage/' + pack.photo">
+
+
+        <div class="card-body">
+          <h5 class="card-title">{{ pack.nom }}</h5>
+          <p class="card-text" *ngIf="pack.description">{{ pack.description }}</p>
+          <p class="card-text">
+            <strong>Prix total:</strong> {{ pack.prix | currency:'EUR' }}
+          </p>
+          <p class="card-text">
+            <strong>Produits:</strong>
+            <span *ngFor="let p of pack.produits; let i = index">
+              {{ p.nom }} ({{ p.prix | currency:'EUR' }})<span *ngIf="i < pack.produits.length - 1">, </span>
+            </span>
+          </p>
+          <div class="d-flex justify-content-end mt-3">
+            <button class="btn btn-sm btn-warning me-2" (click)="edit(pack)">Modifier</button>
+            <button class="btn btn-sm btn-danger" (click)="delete(pack)">Supprimer</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="packs.length === 0" class="text-center text-muted mt-5">
+    Aucun pack trouvé.
+  </div>
+</div>

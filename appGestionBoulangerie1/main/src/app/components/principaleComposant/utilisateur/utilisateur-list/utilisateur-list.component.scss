@@ -1,0 +1,68 @@
+
+  .bg-gradient-primary {
+    background: linear-gradient(135deg, #3a7bd5, #00d2ff);
+  }
+
+  .avatar-placeholder {
+    width: 42px;
+    height: 42px;
+    font-weight: 600;
+  }
+
+  .user-row:hover {
+    background-color: #f8f9fa;
+    transition: background-color 0.2s;
+  }
+
+  .role-select {
+    font-weight: 500;
+    border: 1px solid #dee2e6;
+    min-width: 140px;
+  }
+
+  .role-select.bg-admin {
+    background-color: rgba(220, 53, 69, 0.1);
+    color: #dc3545;
+  }
+
+  .role-select.bg-client {
+    background-color: rgba(13, 110, 253, 0.1);
+    color: #0d6efd;
+  }
+
+  .role-select.bg-gestionnaire {
+    background-color: rgba(25, 135, 84, 0.1);
+    color: #198754;
+  }
+
+  .role-select.bg-livreur {
+    background-color: rgba(255, 193, 7, 0.1);
+    color: #ffc107;
+  }
+
+  .badge.bg-admin {
+    background-color: rgba(220, 53, 69, 0.1);
+    color: #dc3545;
+  }
+
+  .badge.bg-client {
+    background-color: rgba(13, 110, 253, 0.1);
+    color: #0d6efd;
+  }
+
+  .badge.bg-gestionnaire {
+    background-color: rgba(25, 135, 84, 0.1);
+    color: #198754;
+  }
+
+  .badge.bg-livreur {
+    background-color: rgba(255, 193, 7, 0.1);
+    color: #ffc107;
+  }
+
+  .table th {
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    letter-spacing: 0.5px;
+  }

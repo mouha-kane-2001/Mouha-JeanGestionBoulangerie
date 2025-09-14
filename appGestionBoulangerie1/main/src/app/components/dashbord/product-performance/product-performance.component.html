@@ -1,0 +1,161 @@
+<div class="admin-dashboard">
+
+
+
+
+  <!-- Message d'erreur -->
+  <div *ngIf="hasError && !isLoading" class="error-container">
+    <mat-icon color="warn">error_outline</mat-icon>
+    <h3>Erreur de chargement des données</h3>
+    <button mat-button color="primary" (click)="refreshData()">Réessayer</button>
+  </div>
+
+  <!-- Contenu principal -->
+  <div *ngIf="!isLoading && !hasError" class="dashboard-content">
+
+    <!-- Cartes de statistiques -->
+    <div class="stats-grid">
+      <!-- Revenus -->
+      <mat-card class="stat-card revenue-card">
+        <mat-card-header>
+          <mat-card-title>Revenus</mat-card-title>
+          <div class="card-icon">
+            <mat-icon>euro_symbol</mat-icon>
+          </div>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="stat-value">{{ revenusStats.total || 0 | currency:'EUR':'symbol':'1.2-2' }}</div>
+          <div class="stat-label">Total</div>
+          <div class="stat-subvalue">
+            <mat-icon>today</mat-icon>
+            {{ revenusStats.duJour || 0 | currency:'EUR':'symbol':'1.2-2' }} aujourd'hui
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Commandes -->
+      <mat-card class="stat-card orders-card">
+        <mat-card-header>
+          <mat-card-title>Commandes</mat-card-title>
+          <div class="card-icon">
+            <mat-icon>shopping_cart</mat-icon>
+          </div>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="stat-value">{{ commandesStats.total || 0 }}</div>
+          <div class="stat-label">Total</div>
+          <div class="stat-subvalue">
+            <mat-icon>today</mat-icon>
+            {{ commandesStats.duJour || 0 }} aujourd'hui
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Clients -->
+      <mat-card class="stat-card clients-card">
+        <mat-card-header>
+          <mat-card-title>Clients</mat-card-title>
+          <div class="card-icon">
+            <mat-icon>people</mat-icon>
+          </div>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="stat-value">{{ clientsStats.total || 0 }}</div>
+          <div class="stat-label">Total</div>
+          <div class="stat-subvalue">
+            <mat-icon>person_add</mat-icon>
+            {{ clientsStats.nouveaux || 0 }} nouveaux aujourd'hui
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Promotions -->
+      <mat-card class="stat-card promotions-card">
+        <mat-card-header>
+          <mat-card-title>Promotions</mat-card-title>
+          <div class="card-icon">
+            <mat-icon>local_offer</mat-icon>
+          </div>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="stat-value">{{ promotionsActives || 0 }}</div>
+          <div class="stat-label">Actives</div>
+          <div class="stat-subvalue">
+            <mat-icon>event_available</mat-icon>
+            En cours
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <!-- Détails des commandes -->
+    <mat-card class="detail-card">
+      <mat-card-header>
+        <mat-card-title>Statut des Commandes</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+      <div class="status-grid">
+          <div class="status-item" [class]="getStatutClass('en_preparation')">
+            <div class="status-count">{{ commandesStats.enPreparation || 0 }}</div>
+            <div class="status-label">{{ getStatutLabel('en_preparation') }}</div>
+          </div>
+          <div class="status-item" [class]="getStatutClass('en_livraison')">
+            <div class="status-count">{{ commandesStats.enLivraison || 0 }}</div>
+            <div class="status-label">{{ getStatutLabel('en_livraison') }}</div>
+          </div>
+          <div class="status-item" [class]="getStatutClass('livree')">
+            <div class="status-count">{{ commandesStats.livrees || 0 }}</div>
+            <div class="status-label">{{ getStatutLabel('livree') }}</div>
+          </div>
+          <div class="status-item" [class]="getStatutClass('annulee')">
+            <div class="status-count">{{ commandesStats.annulees || 0 }}</div>
+            <div class="status-label">{{ getStatutLabel('annulee') }}</div>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Produits populaires et stock critique -->
+    <div class="details-grid">
+      <!-- Produits les plus vendus -->
+      <mat-card class="detail-card">
+        <mat-card-header>
+          <mat-card-title>Produits Populaires</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div *ngIf="produitsTop.length === 0" class="empty-state">
+            <mat-icon>inventory_2</mat-icon>
+            <p>Aucune vente enregistrée</p>
+          </div>
+          <div *ngFor="let produit of produitsTop; let i = index" class="product-item">
+            <div class="product-rank">{{ i + 1 }}</div>
+            <div class="product-info">
+              <div class="product-name">{{ produit.produit?.nom || 'Produit inconnu' }}</div>
+              <div class="product-sales">{{ produit.total_vendu }} ventes</div>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Stock critique -->
+      <mat-card class="detail-card stock-card">
+        <mat-card-header>
+          <mat-card-title>Stock Critique</mat-card-title>
+          <mat-icon class="warning-icon">warning</mat-icon>
+        </mat-card-header>
+        <mat-card-content>
+          <div *ngIf="stockCritique.length === 0" class="empty-state">
+            <mat-icon>check_circle</mat-icon>
+            <p>Aucun produit en stock critique</p>
+          </div>
+          <div *ngFor="let produit of stockCritique" class="stock-item">
+            <div class="product-name">{{ produit.nom }}</div>
+            <div class="stock-level" [class.critical]="produit.stock < 5">
+              {{ produit.stock }} restant(s)
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+</div>

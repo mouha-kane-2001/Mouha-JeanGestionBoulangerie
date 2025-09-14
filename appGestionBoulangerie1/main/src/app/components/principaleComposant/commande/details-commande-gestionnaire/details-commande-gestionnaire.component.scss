@@ -1,0 +1,120 @@
+     .order-timeline {
+        position: relative;
+        padding-left: 30px;
+        margin-bottom: 30px;
+    }
+    .order-timeline::before {
+        content: '';
+        position: absolute;
+        left: 10px;
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background-color: #e9ecef;
+    }
+    .timeline-step {
+        position: relative;
+        margin-bottom: 20px;
+    }
+    .timeline-step::before {
+        content: '';
+        position: absolute;
+        left: -30px;
+        top: 5px;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background-color: #fff;
+        border: 2px solid #e9ecef;
+        z-index: 1;
+    }
+    .timeline-step.active::before {
+        background-color: #0d6efd;
+        border-color: #0d6efd;
+    }
+    .timeline-step.completed::before {
+        background-color: #198754;
+        border-color: #198754;
+    }
+    .product-img {
+        width: 60px;
+        height: 60px;
+        object-fit: cover;
+        border-radius: 4px;
+    }
+    .badge-en_attente { background-color: #6c757d; }
+    .badge-en_preparation { background-color: #ffc107; }
+    .badge-prête { background-color: #0dcaf0; }
+    .badge-en_livraison { background-color: #0d6efd; }
+    .badge-livrée { background-color: #198754; }
+    .section-card {
+        border-radius: 8px;
+        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+        margin-bottom: 20px;
+    }
+    .header-actions {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    .fake-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.fake-modal-content {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  width: 400px;
+  max-width: 90%;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+}

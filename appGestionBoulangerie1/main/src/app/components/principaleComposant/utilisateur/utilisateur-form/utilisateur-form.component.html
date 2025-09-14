@@ -1,0 +1,176 @@
+<div class="container mt-4">
+  <div class="card shadow-lg border-0" style="border-radius: 12px; overflow: hidden; border: 1px solid #e0e6ed;">
+    <!-- En-tête avec thème bleu professionnel -->
+    <div class="card-header text-white py-4" style="background: linear-gradient(135deg, #2c5cc5, #3b82f6);">
+      <h4 class="mb-0 text-center">
+        <i class="bi bi-person-badge me-2"></i>
+        {{ mode === 'ajout' ? 'Inscription' : 'Modifier un votre compte' }}
+      </h4>
+      <p class="text-center mb-0 mt-2 opacity-90" style="font-size: 0.95rem;">
+        {{ mode === 'ajout' ? 'Rejoignez notre équipe' : 'Mettez à jour les informations' }}
+      </p>
+    </div>
+
+    <div class="card-body p-4" style="background-color: #f8fafc;">
+      <form #userForm="ngForm" (ngSubmit)="soumettreFormulaire()" novalidate>
+
+        <!-- Section Informations Personnelles -->
+        <div class="mb-4">
+          <h5 class="mb-3 d-flex align-items-center" style="color: #2c5cc5; padding-bottom: 10px;">
+            <i class="bi bi-person-circle me-2"></i>
+            <span class="flex-grow-1" style="border-bottom: 2px solid #3b82f6;">Informations Personnelles</span>
+          </h5>
+
+          <div class="row">
+            <!-- Prénom -->
+            <div class="col-md-6 mb-3">
+              <label for="prenom" class="form-label fw-semibold" style="color: #374151;">Prénom</label>
+              <div class="input-group has-validation">
+                <span class="input-group-text" style="background-color: #f0f7ff; border-color: #d1e0ff;">
+                  <i class="bi bi-person" style="color: #2c5cc5;"></i>
+                </span>
+                <input type="text" class="form-control" id="prenom" placeholder="Ex: Jean"
+                       name="prenom" [(ngModel)]="utilisateur.prenom" #prenomRef="ngModel" required
+                       style="border-color: #d1e0ff;">
+              </div>
+              <div class="text-danger small mt-1" *ngIf="prenomRef.invalid && prenomRef.touched">
+                Le prénom est obligatoire.
+              </div>
+            </div>
+
+            <!-- Nom -->
+            <div class="col-md-6 mb-3">
+              <label for="nom" class="form-label fw-semibold" style="color: #374151;">Nom</label>
+              <div class="input-group has-validation">
+                <span class="input-group-text" style="background-color: #f0f7ff; border-color: #d1e0ff;">
+                  <i class="bi bi-person-badge" style="color: #2c5cc5;"></i>
+                </span>
+                <input type="text" class="form-control" id="nom" placeholder="Ex: Dupont"
+                       name="nom" [(ngModel)]="utilisateur.nom" #nomRef="ngModel" required
+                       style="border-color: #d1e0ff;">
+              </div>
+              <div class="text-danger small mt-1" *ngIf="nomRef.invalid && nomRef.touched">
+                Le nom est obligatoire.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section Contact -->
+        <div class="mb-4">
+          <h5 class="mb-3 d-flex align-items-center" style="color: #2c5cc5; padding-bottom: 10px;">
+            <i class="bi bi-envelope me-2"></i>
+            <span class="flex-grow-1" style="border-bottom: 2px solid #3b82f6;">Coordonnées</span>
+          </h5>
+
+          <!-- Email -->
+          <div class="mb-3">
+            <label for="email" class="form-label fw-semibold" style="color: #374151;">Email</label>
+            <div class="input-group has-validation">
+              <span class="input-group-text" style="background-color: #f0f7ff; border-color: #d1e0ff;">
+                <i class="bi bi-envelope" style="color: #2c5cc5;"></i>
+              </span>
+              <input type="email" class="form-control" id="email" placeholder="exemple@boulangerie.fr"
+                     name="email" [(ngModel)]="utilisateur.email" #emailRef="ngModel" required email
+                     style="border-color: #d1e0ff;">
+            </div>
+            <div class="text-danger small mt-1" *ngIf="emailRef.invalid && emailRef.touched">
+              <span *ngIf="emailRef.errors?.['required']">L'email est obligatoire.</span>
+              <span *ngIf="emailRef.errors?.['email']">L'email doit être valide.</span>
+            </div>
+          </div>
+
+          <!-- Téléphone -->
+          <div class="mb-3">
+            <label for="telephone" class="form-label fw-semibold" style="color: #374151;">Téléphone</label>
+            <div class="input-group">
+              <span class="input-group-text" style="background-color: #f0f7ff; border-color: #d1e0ff;">
+                <i class="bi bi-telephone" style="color: #2c5cc5;"></i>
+              </span>
+              <input type="text" class="form-control" id="telephone" placeholder="01 23 45 67 89"
+                     name="telephone" [(ngModel)]="utilisateur.telephone"
+                     style="border-color: #d1e0ff;">
+            </div>
+          </div>
+
+          <!-- Adresse -->
+          <div class="mb-3">
+            <label for="adresse" class="form-label fw-semibold" style="color: #374151;">Adresse</label>
+            <div class="input-group">
+              <span class="input-group-text" style="background-color: #f0f7ff; border-color: #d1e0ff;">
+                <i class="bi bi-geo-alt" style="color: #2c5cc5;"></i>
+              </span>
+              <textarea class="form-control" id="adresse" placeholder="Adresse complète"
+                        name="adresse" [(ngModel)]="utilisateur.adresse" rows="2"
+                        style="border-color: #d1e0ff;"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section Mot de passe (seulement pour l'ajout) -->
+        <div class="mb-4" *ngIf="mode === 'ajout'">
+          <h5 class="mb-3 d-flex align-items-center" style="color: #2c5cc5; padding-bottom: 10px;">
+            <i class="bi bi-shield-lock me-2"></i>
+            <span class="flex-grow-1" style="border-bottom: 2px solid #3b82f6;">Sécurité</span>
+          </h5>
+
+          <div class="row">
+            <!-- Mot de passe -->
+            <div class="col-md-6 mb-3">
+              <label for="motDePasse" class="form-label fw-semibold" style="color: #374151;">Mot de passe</label>
+              <div class="input-group has-validation">
+                <span class="input-group-text" style="background-color: #f0f7ff; border-color: #d1e0ff;">
+                  <i class="bi bi-key" style="color: #2c5cc5;"></i>
+                </span>
+                <input type="password" class="form-control" id="motDePasse" placeholder="Saisir un mot de passe"
+                       name="motDePasse" [(ngModel)]="motDePasse" #motDePasseRef="ngModel" required
+                       style="border-color: #d1e0ff;">
+              </div>
+              <div class="text-danger small mt-1" *ngIf="motDePasseRef.invalid && motDePasseRef.touched">
+                Le mot de passe est obligatoire.
+              </div>
+            </div>
+
+            <!-- Confirmation mot de passe -->
+            <div class="col-md-6 mb-3">
+              <label for="confirmerMotDePasse" class="form-label fw-semibold" style="color: #374151;">Confirmation</label>
+              <div class="input-group has-validation">
+                <span class="input-group-text" style="background-color: #f0f7ff; border-color: #d1e0ff;">
+                  <i class="bi bi-key-fill" style="color: #2c5cc5;"></i>
+                </span>
+                <input type="password" class="form-control" id="confirmerMotDePasse" placeholder="Confirmer le mot de passe"
+                       name="confirmerMotDePasse" [(ngModel)]="confirmerMotDePasse" #confirmerMotDePasseRef="ngModel" required
+                       style="border-color: #d1e0ff;">
+              </div>
+              <div class="text-danger small mt-1" *ngIf="motDePasse !== confirmerMotDePasse && confirmerMotDePasseRef.touched">
+                Les mots de passe ne correspondent pas.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bouton de soumission -->
+        <div class="d-grid mt-4">
+          <button type="submit" class="btn py-3 fw-semibold text-white position-relative"
+                  [disabled]="userForm.invalid || (mode === 'ajout' && motDePasse !== confirmerMotDePasse)"
+                  style="background: linear-gradient(135deg, #2c5cc5, #3b82f6); border: none; border-radius: 8px; transition: all 0.3s;">
+            <i class="bi me-2" [ngClass]="mode === 'ajout' ? 'bi-person-plus' : 'bi-pencil'"></i>
+            {{ mode === 'ajout' ? 'Créer le compte' : 'Enregistrer les modifications' }}
+          </button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+</div>
+
+
+<!-- Bouton vers Connexion -->
+<div class="text-center mt-3">
+  <p class="text-muted">
+    Déjà inscrit ?
+    <a routerLink="/login" class="btn btn-outline-primary ms-2">
+      <i class="bi bi-box-arrow-in-right me-1"></i> Se connecter
+    </a>
+  </p>
+</div>

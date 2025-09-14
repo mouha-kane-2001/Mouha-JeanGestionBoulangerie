@@ -1,0 +1,372 @@
+<div class="container-fluid py-4">
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <h1 class="h3 mb-0">Détails de la Commande #{{commande?.id}}</h1>
+                <div class="header-actions">
+                    <button class="btn btn-outline-secondary"  >
+                        <i class="bi bi-arrow-left"></i> Retour
+                    </button>
+                    <button class="btn btn-outline-primary" (click)="imprimerDetails()">
+                        <i class="bi bi-printer"></i> Imprimer
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+    <div class="row">
+        <!-- Colonne principale -->
+        <div class="col-lg-8">
+            <!-- Statut de la commande -->
+            <div class="card section-card">
+                <div class="card-header bg-light">
+                    <h5 class="card-title mb-0">Statut de la commande</h5>
+                </div>
+                <div class="card-body">
+                    <div class="order-timeline">
+                        <div class="timeline-step" [class.completed]="estEtapeCompletee('en_attente')"
+                             [class.active]="commande?.statut === 'en_attente'">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h6 class="mb-1">Commande passée</h6>
+                                    <p class="text-muted mb-0">{{commande?.created_at | date:'dd/MM/yyyy à HH:mm'}}</p>
+                                </div>
+                                <span class="badge" [class.bg-success]="estEtapeCompletee('en_attente')"
+                                      [class.bg-primary]="commande?.statut === 'en_attente'">
+                                    <i class="bi" [class.bi-check-circle]="estEtapeCompletee('en_attente')"
+                                       [class.bi-gear]="commande?.statut === 'en_attente'"></i>
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="timeline-step" [class.completed]="estEtapeCompletee('en_preparation')"
+                             [class.active]="commande?.statut === 'en_preparation'">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h6 class="mb-1">En préparation</h6>
+                                    <p class="text-muted mb-0" *ngIf="commande?.statut !== 'en_attente'">
+                                        {{commande?.updated_at | date:'dd/MM/yyyy à HH:mm'}}
+                                    </p>
+                                </div>
+                                <span class="badge" [class.bg-success]="estEtapeCompletee('en_preparation')"
+                                      [class.bg-primary]="commande?.statut === 'en_preparation'">
+                                    <i class="bi" [class.bi-check-circle]="estEtapeCompletee('en_preparation')"
+                                       [class.bi-gear]="commande?.statut === 'en_preparation'"></i>
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="timeline-step" [class.completed]="estEtapeCompletee('prete')"
+                             [class.active]="commande?.statut === 'prete'">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h6 class="mb-1">Prête pour livraison</h6>
+                                    <p class="text-muted mb-0" *ngIf="commande?.statut !== 'en_attente' && commande?.statut !== 'en_preparation'">
+                                        {{commande?.updated_at | date:'dd/MM/yyyy à HH:mm'}}
+                                    </p>
+                                </div>
+                                <span class="badge" [class.bg-success]="estEtapeCompletee('prete')"
+                                      [class.bg-primary]="commande?.statut === 'prete'">
+                                    <i class="bi" [class.bi-check-circle]="estEtapeCompletee('prete')"
+                                       [class.bi-gear]="commande?.statut === 'prete'"></i>
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="timeline-step" [class.completed]="estEtapeCompletee('en_livraison')"
+                             [class.active]="commande?.statut === 'en_livraison'">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h6 class="mb-1">En livraison</h6>
+                                    <p class="text-muted mb-0" *ngIf="commande?.statut === 'en_livraison' || commande?.statut === 'livrée'">
+                                        {{commande?.updated_at | date:'dd/MM/yyyy à HH:mm'}}
+                                    </p>
+                                </div>
+                                <span class="badge" [class.bg-success]="estEtapeCompletee('en_livraison')"
+                                      [class.bg-primary]="commande?.statut === 'en_livraison'">
+                                    <i class="bi" [class.bi-check-circle]="estEtapeCompletee('en_livraison')"
+                                       [class.bi-gear]="commande?.statut === 'en_livraison'"></i>
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="timeline-step" [class.completed]="estEtapeCompletee('livrée')"
+                             [class.active]="commande?.statut === 'livrée'">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h6 class="mb-1">Livrée</h6>
+                                    <p class="text-muted mb-0" *ngIf="commande?.statut === 'livrée'">
+                                        {{commande?.updated_at | date:'dd/MM/yyyy à HH:mm'}}
+                                    </p>
+                                </div>
+                                <span class="badge" [class.bg-success]="estEtapeCompletee('livrée')"
+                                      [class.bg-primary]="commande?.statut === 'livrée'">
+                                    <i class="bi" [class.bi-check-circle]="estEtapeCompletee('livrée')"
+                                       [class.bi-gear]="commande?.statut === 'livrée'"></i>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Articles de la commande -->
+            <div class="card section-card">
+                <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                    <h5 class="card-title mb-0">Articles commandés</h5>
+                    <span class="badge bg-primary">{{commande?.detail_commandes?.length}} article(s)</span>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Produit</th>
+                                    <th>Prix unitaire</th>
+                                    <th>Quantité</th>
+                                    <th class="text-end">Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                               <tr *ngFor="let item of commande?.detail_commandes">
+  <td>
+    <div class="d-flex align-items-center">
+     <img [src]="item.produit?.photo
+           || (item.pack?.photo ? 'http://localhost:8000/storage/' + item.pack?.photo : 'https://via.placeholder.com/60')"
+     [alt]="item.produit?.nom || item.pack?.nom"
+     class="product-img me-3">
+
+
+      <div>
+        <h6 class="mb-0">{{ item.produit?.nom || item.pack?.nom }}</h6>
+        <small class="text-muted">
+          Réf: {{ item.produit?.id || item.pack?.id }}
+        </small>
+      </div>
+    </div>
+  </td>
+  <td>{{ item.prix_unitaire | currency:'EUR' }}</td>
+  <td>{{ item.quantite }}</td>
+  <td class="text-end">{{ item.prix_total | currency:'EUR' }}</td>
+</tr>
+
+                            </tbody>
+                            <tfoot class="table-light">
+                               <tr>
+     <td class="text-end fw-bold fs-5">{{commande?.total | currency:'EUR'}}</td>
+</tr>
+
+                                <tr>
+                                    <td colspan="3" class="text-end fw-bold">Total:</td>
+                                    <td class="text-end fw-bold fs-5">{{commande?.total  | currency:'EUR'}}</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Informations de livraison -->
+            <div class="card section-card" *ngIf="commande?.statut_livraison !== 'non_livrable'">
+                <div class="card-header bg-light">
+                    <h5 class="card-title mb-0">Informations de livraison</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6>Adresse de livraison</h6>
+                            <p class="mb-1">{{commande?.user?.nom}}</p>
+                            <p class="mb-1">{{commande?.user?.adresse}}</p>
+                            <p class="mb-0">{{commande?.user?.telephone}}</p>
+                        </div>
+                        <div class="col-md-6" *ngIf="commande?.statut_livraison === 'en_livraison' || commande?.statut_livraison === 'livrée'">
+                            <h6>Suivi de livraison</h6>
+                            <p class="mb-1" *ngIf="commande?.transporteur">
+                                Transporteur: <strong>{{commande?.transporteur}}</strong>
+                            </p>
+                            <p class="mb-1" *ngIf="commande?.numero_suivi">
+                                N° de suivi: <strong>{{commande?.numero_suivi}}</strong>
+                            </p>
+                            <p class="mb-0" *ngIf="commande?.estimation_livraison">
+                                Estimation: {{commande?.estimation_livraison | date:'dd/MM/yyyy'}}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Colonne latérale -->
+        <div class="col-lg-4">
+            <!-- Informations client -->
+            <div class="card section-card">
+                <div class="card-header bg-light">
+                    <h5 class="card-title mb-0">Informations client</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="flex-grow-1">
+                            <h6 class="mb-0">{{commande?.user?.name}}</h6>
+                            <p class="text-muted mb-0">{{commande?.user?.email}}</p>
+                        </div>
+                    </div>
+                    <div class="mb-2">
+                        <i class="bi bi-telephone me-2"></i>
+                        <span>{{commande?.user?.telephone || 'Non renseigné'}}</span>
+                    </div>
+                    <div class="mb-0">
+                        <i class="bi bi-geo-alt me-2"></i>
+                        <span>{{commande?.user?.adresse || 'Non renseignée'}}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Résumé de la commande -->
+            <div class="card section-card">
+                <div class="card-header bg-light">
+                    <h5 class="card-title mb-0">Résumé de la commande</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>N° de commande:</span>
+                        <strong>#{{commande?.id}}</strong>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Date de commande:</span>
+                        <strong>{{commande?.created_at | date:'dd/MM/yyyy à HH:mm'}}</strong>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Statut:</span>
+                        <span class="badge" [ngClass]="{
+                            'badge-en_attente': commande?.statut === 'en_attente',
+                            'badge-en_preparation': commande?.statut === 'en_preparation',
+                            'badge-prête': commande?.statut === 'prete',
+                            'badge-en_livraison': commande?.statut === 'en_livraison',
+                            'badge-livrée': commande?.statut === 'livree'
+                        }">{{commande?.statut}}</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Mode de paiement:</span>
+                        <strong>{{commande?.mode_paiement || 'Non spécifié'}}</strong>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2" *ngIf="commande?.facture">
+                        <span>Facture:</span>
+                        <strong>
+                            <a href="#" (click)="$event.preventDefault(); commande && commande.id && telechargerFacture(commande.id)">
+                                {{commande?.facture?.numero_facture}}
+                            </a>
+                        </strong>
+                    </div>
+                    <hr>
+
+
+                    <div class="d-flex justify-content-between fw-bold fs-5">
+                        <span>Total:</span>
+                        <strong>{{commande?.total  | currency:'EUR'}}</strong>
+                    </div>
+                </div>
+
+
+                <div class="d-grid mt-2">
+                    <button class="btn btn-outline-primary btn-sm"
+        *ngIf="commande?.facture"
+        (click)="voirFacture()">
+    <i class="bi bi-file-earmark-text"></i> Voir la facture
+</button>
+              </div>
+
+
+            </div>
+
+            <!-- Actions -->
+            <div class="card section-card">
+                <div class="card-header bg-light">
+                    <h5 class="card-title mb-0">Actions</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+
+
+
+
+
+
+                        <button class="btn btn-outline-primary" (click)="changerStatut(commande, 'en_preparation')"
+                            *ngIf="commande?.statut === 'en_attente'">
+                            <i class="bi bi-play-circle"></i> Démarrer la préparation
+                        </button>
+                        <button class="btn btn-outline-info" (click)="changerStatut(commande, 'prete')"
+                            *ngIf="commande?.statut === 'en_preparation'">
+                            <i class="bi bi-check-circle"></i> Marquer comme prête
+                        </button>
+
+
+                        <button class="btn btn-outline-warning" (click)="ouvrirLivraisonInfo()"
+                         *ngIf="commande?.statut === 'prete'">
+                          <i class="bi bi-truck"></i> Démarrer la livraison
+                        </button>
+
+
+                        <button class="btn btn-outline-success" (click)="changerStatut(commande, 'livree')"
+                            *ngIf="commande?.statut === 'en_livraison'">
+                            <i class="bi bi-box-seam"></i> Marquer comme livrée
+                        </button>
+                        <button class="btn btn-outline-secondary" (click)="commande && genererFacture(commande.id)"
+                            *ngIf="!commande?.facture">
+                            <i class="bi bi-receipt"></i> Générer la facture
+                        </button>
+
+                        <button class="btn btn-outline-dark" (click)="commande?.user && contacterClient(commande?.user)">
+                            <i class="bi bi-chat-dots"></i> Contacter le client
+                        </button>
+                              <button class="btn btn-outline-danger" (click)="supprimerCommande()">
+  <i class="bi bi-trash"></i> Supprimer la commande
+</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+ <!-- Bloc modal -->
+<!-- Bloc modal -->
+<div *ngIf="showLivraisonInfo" class="fake-modal">
+  <div class="fake-modal-content">
+    <div class="d-flex justify-content-between align-items-center mb-2">
+      <h5>Détails de la livraison</h5>
+      <button class="btn-close" (click)="fermerLivraisonInfo()">&times;</button>
+    </div>
+
+    <form (ngSubmit)="confirmerLivraison()">
+      <div class="mb-2">
+        <label class="form-label"><strong>Transporteur</strong></label>
+        <input type="text" class="form-control" [(ngModel)]="livraison.transporteur" name="transporteur" required>
+      </div>
+
+      <div class="mb-2">
+        <label class="form-label"><strong>Numéro de suivi</strong></label>
+        <input type="text" class="form-control" [(ngModel)]="livraison.numero_suivi" name="numero_suivi" required>
+      </div>
+
+      <div class="mb-2">
+        <label class="form-label"><strong>Estimation livraison</strong></label>
+        <input type="date" class="form-control" [(ngModel)]="livraison.estimation_livraison" name="estimation_livraison" required>
+      </div>
+
+      <div class="d-flex justify-content-end mt-3">
+        <button type="submit" class="btn btn-primary">Confirmer</button>
+        <button type="button" class="btn btn-secondary ms-2" (click)="fermerLivraisonInfo()">Annuler</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+

@@ -1,0 +1,129 @@
+<div class="container mt-4" *ngIf="!loading; else loadingTemplate">
+  <h2 class="mb-4 text-center text-primary fw-bold">
+    <i class="bi bi-cart3 me-2"></i>Mon Panier
+  </h2>
+
+  <!-- Message si panier vide -->
+  <div *ngIf="panier && panier.items.length === 0" class="text-center py-5">
+    <i class="bi bi-bag-x display-1 text-muted"></i>
+    <h4 class="mt-3 text-muted">Votre panier est vide</h4>
+    <p class="text-muted">Ajoutez des produits ou des packs pour voir votre panier ici.</p>
+    <button class="btn btn-primary mt-3">
+      <i class="bi bi-arrow-left me-2"></i>Continuer vos achats
+    </button>
+  </div>
+
+  <!-- Liste des éléments -->
+  <div class="row g-4" *ngIf="panier && panier.items.length > 0">
+    <div *ngFor="let item of panier.items" class="col-md-6 col-lg-4">
+      <div class="card h-100 shadow-sm border-0">
+        <div class="card-img-top-container position-relative" style="height: 200px; overflow: hidden;">
+          <img [src]="getElementPhoto(item)"
+               class="card-img-top h-100 object-fit-cover"
+               [alt]="getElementName(item)">
+          <span class="badge bg-success position-absolute top-0 end-0 m-2 fs-6">
+            {{ getElementPrice(item) | currency:'EUR':'symbol':'1.2-2' }}
+          </span>
+          <!-- Badge pour indiquer si c'est un produit ou un pack -->
+          <span class="badge position-absolute top-0 start-0 m-2 fs-3"
+                [ngClass]="isProduit(item) ? 'bg-info' : 'bg-warning'">
+            {{ isProduit(item) ? 'Produit' : 'Pack' }}
+          </span>
+        </div>
+        <div class="card-body d-flex flex-column">
+          <h5 class="card-title text-primary fw-bold text-truncate" [title]="getElementName(item)">
+            {{ getElementName(item) }}
+          </h5>
+          <p class="text-muted small flex-grow-1 line-clamp-2">
+            {{ getElementDescription(item) }}
+          </p>
+
+          <!-- Affichage des produits contenus dans un pack -->
+          <div *ngIf="isPack(item) && item.pack?.produits" class="mb-2">
+            <small class="text-muted d-block">Contient:</small>
+            <div *ngFor="let produit of item.pack?.produits" class="ms-2">
+              <small class="text-muted">• {{ produit.nom }}</small>
+            </div>
+          </div>
+
+          <div class="d-flex align-items-center justify-content-between mt-2">
+            <div class="input-group input-group-sm w-50">
+              <button class="btn btn-outline-primary" (click)="diminuerQuantite(item)">−</button>
+              <input type="text" class="form-control text-center fw-bold" [value]="item.quantite" readonly>
+              <button class="btn btn-outline-primary" (click)="augmenterQuantite(item)">+</button>
+            </div>
+            <span class="fw-bold text-success fs-5">
+              {{ (item.quantite * getElementPrice(item)) | currency:'EUR':'symbol':'1.2-2' }}
+            </span>
+          </div>
+
+          <button class="btn btn-outline-danger btn-sm mt-3 w-100 d-flex align-items-center justify-content-center"
+                  (click)="retirerElement(item)">
+            <i class="bi bi-trash me-1"></i> Retirer du panier
+          </button>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- Ajouter ce champ avant le select de paiement -->
+<div class="mt-3">
+  <label class="form-label fw-bold">Adresse de livraison :</label>
+  <textarea
+    class="form-control"
+    [(ngModel)]="adresseLivraison"
+    rows="3"
+    placeholder="Veuillez saisir votre adresse complète"
+    required>
+  </textarea>
+</div>
+
+<div class="mt-3">
+  <label class="form-label fw-bold">Mode de paiement :</label>
+  <select class="form-select" [(ngModel)]="modePaiement">
+    <option value="en_ligne">En ligne</option>
+    <option value="a_la_livraison">À la livraison</option>
+    <option value="espece">Espèce</option>
+  </select>
+</div>
+
+
+
+<app-paiement
+  [showModal]="showModal"
+  [modePaiement]="modePaiement"
+  [adresseLivraison]="adresseLivraison"
+  (paiementTermine)="fermerModal()">
+
+</app-paiement>
+
+
+  </div>
+
+
+  <!-- Total et actions -->
+  <div *ngIf="panier && panier.items.length > 0" class="mt-4 p-4 bg-light rounded-3 shadow-sm">
+    <div class="row align-items-center">
+      <div class="col-md-6 mb-3 mb-md-0">
+        <h3 class="mb-0">Total : <span class="text-success">{{ total | currency:'EUR':'symbol':'1.2-2' }}</span></h3>
+        <p class="text-muted mb-0 mt-1">Frais de livraison calculés à l'étape suivante</p>
+      </div>
+      <div class="col-md-6 d-flex gap-2 justify-content-md-end flex-wrap">
+        <button class="btn btn-outline-danger px-4" (click)="viderPanier()">
+          <i class="bi bi-trash me-1"></i> Vider le panier
+        </button>
+        <button class="btn btn-primary px-4 py-2 fw-bold"  (click)="commander()">
+          <i class="bi bi-credit-card me-2"></i> Commander maintenant
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Loading template -->
+<ng-template #loadingTemplate>
+  <div class="text-center py-5">
+    <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;"></div>
+    <p class="mt-3 fs-5">Chargement du panier...</p>
+  </div>
+</ng-template>

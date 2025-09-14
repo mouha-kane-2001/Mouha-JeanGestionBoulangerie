@@ -1,0 +1,107 @@
+<div class="card p-4 shadow-sm">
+  <h2 class="mb-4 text-primary">{{ mode === 'ajout' ? 'Créer une promotion' : 'Modifier la promotion' }}</h2>
+
+  <form [formGroup]="promoForm" (ngSubmit)="onSubmit()" class="row g-3">
+
+    <!-- Nom -->
+    <div class="col-md-6">
+      <label class="form-label fw-semibold">Nom de la promotion</label>
+      <input formControlName="nom" class="form-control" placeholder="Ex: Soldes d'été" />
+      <div *ngIf="promoForm.get('nom')?.invalid && promoForm.get('nom')?.touched" class="text-danger small">
+        Le nom est requis
+      </div>
+    </div>
+
+    <!-- Type de réduction -->
+    <div class="col-md-6">
+      <label class="form-label fw-semibold">Type de réduction</label>
+      <select formControlName="type_reduction" class="form-select">
+        <option value="pourcentage">Pourcentage (%)</option>
+        <option value="montant">Montant (FCFA)</option>
+      </select>
+    </div>
+
+    <!-- Valeur de réduction -->
+    <div class="col-md-6">
+      <label class="form-label fw-semibold">Valeur de réduction</label>
+      <div class="input-group">
+        <input type="number" formControlName="valeur_reduction" class="form-control" min="0" placeholder="0" />
+        <span class="input-group-text">
+          {{ promoForm.get('type_reduction')?.value === 'pourcentage' ? '%' : '€' }}
+        </span>
+      </div>
+      <div *ngIf="promoForm.get('valeur_reduction')?.invalid && promoForm.get('valeur_reduction')?.touched"
+           class="text-danger small">
+        La valeur de réduction est requise et doit être ≥ 0
+      </div>
+    </div>
+
+    <!-- Description -->
+    <div class="col-12">
+      <label class="form-label fw-semibold">Description</label>
+      <textarea formControlName="description" class="form-control" rows="3"
+                placeholder="Description de la promotion..."></textarea>
+    </div>
+
+    <!-- Dates -->
+    <div class="col-md-6">
+      <label class="form-label fw-semibold">Date de début</label>
+      <input type="date" formControlName="date_debut" class="form-control" />
+      <div *ngIf="promoForm.get('date_debut')?.invalid && promoForm.get('date_debut')?.touched"
+           class="text-danger small">
+        La date de début est requise
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <label class="form-label fw-semibold">Date de fin</label>
+      <input type="date" formControlName="date_fin" class="form-control" />
+      <div *ngIf="promoForm.get('date_fin')?.invalid && promoForm.get('date_fin')?.touched"
+           class="text-danger small">
+        La date de fin est requise
+      </div>
+    </div>
+
+    <!-- Produits -->
+    <div class="col-12">
+      <label class="form-label fw-semibold">Produits concernés</label>
+      <small class="text-muted d-block mb-2">Sélectionnez un ou plusieurs produits</small>
+
+      <div class="card border-0 bg-light">
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-6" *ngFor="let p of produits">
+              <div class="form-check mb-3">
+                <input class="form-check-input" type="checkbox"
+                       [value]="p.id"
+                       [checked]="isProduitSelected(p.id)"
+                       [id]="'produit-' + p.id"
+                       (change)="onProduitChange($event, p.id)">
+                <label class="form-check-label" [for]="'produit-' + p.id">
+                  {{ p.nom }}
+                  <span class="text-muted d-block small">Prix: {{ p.prix | currency:'EUR' }}</span>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="selectedProduitsCount > 0" class="text-success small mt-2">
+        {{ selectedProduitsCount }} produit(s) sélectionné(s)
+      </div>
+    </div>
+
+    <!-- Boutons -->
+    <div class="col-12">
+      <button type="submit" class="btn btn-success px-4" [disabled]="promoForm.invalid">
+        <i class="fas fa-save me-2"></i>
+        {{ mode === 'ajout' ? 'Créer la promotion' : 'Modifier la promotion' }}
+      </button>
+      <button type="button" class="btn btn-outline-secondary ms-2" routerLink="/promotions">
+        Annuler
+      </button>
+    </div>
+
+  </form>
+</div>

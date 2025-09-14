@@ -1,0 +1,291 @@
+// Variables
+$primary: #3f51b5;
+$primary-light: #e8eaf6;
+$secondary: #ff4081;
+$success: #4caf50;
+$warning: #ff9800;
+$danger: #f44336;
+$info: #2196f3;
+$dark: #333;
+$light: #f8f9fa;
+$gray: #6c757d;
+$border-radius: 12px;
+$box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+$transition: all 0.3s ease;
+
+// Mixins
+@mixin flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+@mixin card-style {
+  background: white;
+  border-radius: $border-radius;
+  padding: 24px;
+  box-shadow: $box-shadow;
+  transition: $transition;
+  position: relative;
+  overflow: hidden;
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+  }
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 5px;
+    height: 100%;
+  }
+}
+
+// Styles généraux
+.dashboard-employe {
+  padding: 20px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f5f7ff;
+  min-height: 100vh;
+}
+
+// Header
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  flex-wrap: wrap;
+  gap: 15px;
+
+  .dashboard-title {
+    color: $dark;
+    font-weight: 600;
+    font-size: 1.8rem;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 0;
+
+    .title-icon {
+      color: $primary;
+      font-size: 1.5rem;
+    }
+  }
+
+  .refresh-btn {
+    background-color: $primary;
+    color: white;
+    border: none;
+    border-radius: $border-radius;
+    padding: 10px 20px;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: $transition;
+    box-shadow: $box-shadow;
+
+    &:hover:not([disabled]) {
+      background-color: darken($primary, 10%);
+      transform: translateY(-2px);
+    }
+
+    &:disabled {
+      background-color: $gray;
+      cursor: not-allowed;
+      opacity: 0.7;
+    }
+  }
+}
+
+// État de chargement
+.loading-state {
+  @include flex-center;
+  padding: 60px 20px;
+
+  .loading-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+
+    .spinner {
+      width: 48px;
+      height: 48px;
+      border: 4px solid $primary-light;
+      border-top: 4px solid $primary;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    .loading-text {
+      color: $gray;
+      font-size: 1.1rem;
+    }
+  }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+// Grille des indicateurs
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+// Cartes de statistiques
+.stat-card {
+  @include card-style;
+
+  &.card-pending::before { background-color: $info; }
+  &.card-preparing::before { background-color: $warning; }
+  &.card-delivering::before { background-color: $primary; }
+  &.card-delivered::before { background-color: $success; }
+  &.card-urgent::before { background-color: $danger; }
+
+  .card-content {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+
+    .card-icon {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      @include flex-center;
+      font-size: 1.8rem;
+    }
+
+    .card-pending .card-icon {
+      background-color: rgba($info, 0.15);
+      color: $info;
+    }
+    .card-preparing .card-icon {
+      background-color: rgba($warning, 0.15);
+      color: $warning;
+    }
+    .card-delivering .card-icon {
+      background-color: rgba($primary, 0.15);
+      color: $primary;
+    }
+    .card-delivered .card-icon {
+      background-color: rgba($success, 0.15);
+      color: $success;
+    }
+    .card-urgent .card-icon {
+      background-color: rgba($danger, 0.15);
+      color: $danger;
+    }
+
+    .card-text {
+      flex: 1;
+
+      .stat-value {
+        font-size: 2.2rem;
+        font-weight: 700;
+        margin-bottom: 5px;
+        line-height: 1;
+      }
+
+      .card-pending .stat-value { color: $info; }
+      .card-preparing .stat-value { color: $warning; }
+      .card-delivering .stat-value { color: $primary; }
+      .card-delivered .stat-value { color: $success; }
+      .card-urgent .stat-value { color: $danger; }
+
+      .stat-label {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: $dark;
+        margin-bottom: 5px;
+      }
+
+      .stat-subtitle {
+        font-size: 0.9rem;
+        color: $gray;
+      }
+    }
+  }
+}
+
+// État d'erreur
+.error-state {
+  @include flex-center;
+  padding: 40px 20px;
+
+  .error-content {
+    background: white;
+    border-radius: $border-radius;
+    padding: 30px;
+    box-shadow: $box-shadow;
+    text-align: center;
+    max-width: 500px;
+    width: 100%;
+
+    .error-icon {
+      font-size: 3rem;
+      color: $danger;
+      margin-bottom: 20px;
+    }
+
+    .error-text {
+      h3 {
+        color: $danger;
+        margin: 0 0 10px 0;
+        font-size: 1.5rem;
+      }
+
+      p {
+        color: $gray;
+        margin: 0 0 20px 0;
+      }
+    }
+
+    .retry-btn {
+      background-color: $primary;
+      color: white;
+      border: none;
+      border-radius: $border-radius;
+      padding: 10px 25px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: $transition;
+
+      &:hover {
+        background-color: darken($primary, 10%);
+      }
+    }
+  }
+}
+
+// Responsive
+@media (max-width: 768px) {
+  .dashboard-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .stat-card .card-content {
+    flex-direction: column;
+    text-align: center;
+    gap: 15px;
+
+    .stat-value {
+      font-size: 2rem;
+    }
+  }
+}

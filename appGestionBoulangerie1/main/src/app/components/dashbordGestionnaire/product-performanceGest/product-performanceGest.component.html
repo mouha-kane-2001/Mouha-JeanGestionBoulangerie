@@ -1,0 +1,260 @@
+<div class="commandes-container">
+  <h3 class="section-title">Dernières commandes</h3>
+
+  <div class="commandes-card">
+    <div class="card-content">
+      <div *ngIf="dernieres_commandes.length === 0" class="empty-state">
+        <i class="fas fa-shopping-cart"></i>
+        <p>Aucune commande pour le moment.</p>
+      </div>
+
+      <div *ngIf="dernieres_commandes.length > 0" class="table-container">
+        <table class="commandes-table">
+          <thead>
+            <tr class="header-row">
+              <th class="header-cell">ID</th>
+              <th class="header-cell">Client</th>
+              <th class="header-cell">Statut</th>
+              <th class="header-cell">Paiement</th>
+              <th class="header-cell">Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let c of dernieres_commandes" class="data-row">
+              <!-- ID -->
+              <td class="cell id-cell">#{{ c.id }}</td>
+
+              <!-- Client -->
+              <td class="cell client-cell">
+                <div class="client-info">
+                  <div class="avatar">{{ c.user.prenom[0] }}{{ c.user.nom[0] }}</div>
+                  <div class="client-name">{{ c.user.prenom }} {{ c.user.nom }}</div>
+                </div>
+              </td>
+
+              <!-- Statut -->
+              <td class="cell">
+                <span class="statut-badge" [ngClass]="getStatutClass(c.statut)">
+                  {{ c.statut | titlecase }}
+                </span>
+              </td>
+
+              <!-- Paiement -->
+              <td class="cell paiement-cell">
+                <i class="fas fa-credit-card payment-icon"></i>
+                {{ c.mode_paiement }}
+              </td>
+
+              <!-- Date -->
+              <td class="cell date-cell">
+                <div class="date-wrapper">
+                  <i class="far fa-calendar-alt date-icon"></i>
+                  {{ c.created_at | date:'short' }}
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Ajouter cette ligne dans l'en-tête de votre application pour les icônes Font Awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+/* Styles généraux */
+.commandes-container {
+  padding: 16px;
+  font-family: 'Roboto', sans-serif;
+}
+
+.section-title {
+  color: #3f51b5;
+  font-weight: 500;
+  margin-bottom: 20px;
+  font-size: 1.5rem;
+}
+
+/* Carte */
+.commandes-card {
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  background: white;
+}
+
+.card-content {
+  padding: 20px;
+}
+
+/* État vide */
+.empty-state {
+  text-align: center;
+  padding: 40px 20px;
+  color: #9e9e9e;
+}
+
+.empty-state .fas {
+  font-size: 48px;
+  margin-bottom: 16px;
+}
+
+.empty-state p {
+  font-size: 16px;
+  margin: 0;
+}
+
+/* Table */
+.table-container {
+  overflow-x: auto;
+}
+
+.commandes-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+/* En-têtes */
+.header-row {
+  background-color: #f5f7ff;
+}
+
+.header-cell {
+  color: #3f51b5;
+  font-weight: 600;
+  font-size: 14px;
+  padding: 16px;
+  text-align: left;
+}
+
+/* Cellules */
+.cell {
+  padding: 16px;
+  border-bottom: 1px solid #e0e0e0;
+  font-size: 14px;
+}
+
+.data-row:hover {
+  background-color: #f9f9f9;
+}
+
+/* Cellule ID */
+.id-cell {
+  font-weight: 500;
+  color: #616161;
+}
+
+/* Cellule client */
+.client-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: #3f51b5;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.client-name {
+  font-weight: 500;
+}
+
+/* Badge de statut */
+.statut-badge {
+  padding: 6px 12px;
+  border-radius: 16px;
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: capitalize;
+  display: inline-block;
+}
+
+/* Classes pour les différents statuts */
+.statut-confirme {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+}
+
+.statut-en-cours {
+  background-color: #fff8e1;
+  color: #f57c00;
+}
+
+.statut-livre {
+  background-color: #e3f2fd;
+  color: #1565c0;
+}
+
+.statut-annule {
+  background-color: #ffebee;
+  color: #c62828;
+}
+
+/* Cellule paiement */
+.paiement-cell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.payment-icon {
+  font-size: 16px;
+  color: #757575;
+  width: 20px;
+}
+
+/* Cellule date */
+.date-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.date-icon {
+  font-size: 16px;
+  color: #757575;
+  width: 20px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .commandes-container {
+    padding: 8px;
+  }
+
+  .header-cell, .cell {
+    padding: 12px 8px;
+  }
+
+  .client-info {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+
+  .avatar {
+    width: 32px;
+    height: 32px;
+    font-size: 12px;
+  }
+
+  .commandes-table {
+    font-size: 12px;
+  }
+
+  .statut-badge {
+    padding: 4px 8px;
+  }
+}
+</style>

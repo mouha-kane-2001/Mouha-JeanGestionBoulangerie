@@ -1,0 +1,82 @@
+<h1 class="mb-4">Suggestions pour vous</h1>
+
+<div class="row">
+  @if (loading) {
+    <div class="col-12 text-center py-5">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Chargement...</span>
+      </div>
+      <p class="mt-2">Chargement des suggestions...</p>
+    </div>
+  } @else {
+    @for (item of itemsAffiches; track item.id) {
+      <div class="col-sm-6 col-lg-3 mb-4">
+        <mat-card class="cardWithShadow productcard overflow-hidden">
+          <a>
+            <!-- Modification ici pour gérer les URLs des packs -->
+            <img
+              [src]="getImageUrl(item)"
+              [alt]="item.nom"
+              class="w-100 product-image"
+              mat-card-image
+              (error)="handleImageError($event)"
+            />
+          </a>
+          <mat-card-content class="p-b-24 p-t-12 position-relative">
+            <button
+              mat-mini-fab
+              class="icon-30 cart-btn bg-primary text-white d-block"
+              matTooltip="Ajouter au panier"
+              (click)="ajouterAuPanier(item)"
+            >
+              <i-tabler name="basket" class="icon-16"></i-tabler>
+            </button>
+
+            <mat-card-title class="mat-headline-2 f-s-16 m-b-4">
+              {{ item.nom }}
+            </mat-card-title>
+
+            <div class="d-flex align-items-center justify-content-between">
+              <div class="d-flex align-items-center">
+                @let prixInfo = getPrixAffichage(item);
+                <h6 class="f-w-600 f-s-16 text-primary">
+                  {{ prixInfo.prix | currency:'EUR' }}
+                </h6>
+                @if (prixInfo.prixReduit) {
+                  <span class="f-s-14 m-l-4 text-decoration-line-through text-muted">
+                    {{ prixInfo.prixReduit | currency:'EUR' }}
+                  </span>
+                }
+              </div>
+
+              <div class="m-l-auto d-flex gap-1">
+                <span><i-tabler name="star" class="fill-warning icon-16"></i-tabler></span>
+                <span><i-tabler name="star" class="fill-warning icon-16"></i-tabler></span>
+                <span><i-tabler name="star" class="fill-warning icon-16"></i-tabler></span>
+                <span><i-tabler name="star" class="fill-warning icon-16"></i-tabler></span>
+                <span><i-tabler name="star" class="icon-16 text-muted"></i-tabler></span>
+              </div>
+            </div>
+
+            <!-- Badge pour indiquer le type -->
+            <div class="mt-2">
+              <span
+                [class]="item.type === 'produit' ? 'badge bg-info' : 'badge bg-success'"
+                class="badge"
+              >
+                {{ item.type === 'produit' ? 'Produit' : 'Pack' }}
+              </span>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    }
+  }
+
+  @if (!loading && itemsAffiches.length === 0) {
+    <div class="col-12 text-center py-5">
+      <i-tabler name="mood-sad" class="icon-48 text-muted"></i-tabler>
+      <p class="mt-2 text-muted">Aucun produit ou pack disponible pour le moment</p>
+    </div>
+  }
+</div>

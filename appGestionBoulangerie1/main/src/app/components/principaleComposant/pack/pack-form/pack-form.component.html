@@ -1,0 +1,80 @@
+<h2 class="mb-4 text-primary">{{ mode === 'ajout' ? 'Créer un pack' : 'Modifier le pack' }}</h2>
+
+<form [formGroup]="packForm" (ngSubmit)="onSubmit()" class="row g-3">
+  <div class="col-md-6">
+    <label class="form-label fw-semibold">Nom du pack</label>
+    <input formControlName="nom" class="form-control" placeholder="Ex: Pack Étudiant" />
+    <div *ngIf="packForm.get('nom')?.invalid && packForm.get('nom')?.touched" class="text-danger small">
+      Le nom est requis
+    </div>
+  </div>
+
+  <div class="col-md-6">
+    <label class="form-label fw-semibold">Prix total du pack</label>
+    <div class="form-control bg-light">
+      <strong>{{ calculateTotalPrice() | currency:'EUR' }}</strong>
+      <small class="text-muted d-block">Calculé automatiquement à partir des produits sélectionnés</small>
+    </div>
+  </div>
+
+  <div class="col-12">
+    <label class="form-label fw-semibold">Description</label>
+    <textarea formControlName="description" class="form-control" rows="3"
+              placeholder="Description du pack..."></textarea>
+  </div>
+
+ <div class="col-12">
+  <label class="form-label fw-semibold">Produits concernés</label>
+  <small class="text-muted d-block mb-2">Sélectionnez un ou plusieurs produits</small>
+
+  <div class="card border-0 bg-light">
+    <div class="card-body">
+      <div class="row">
+        <div class="col-md-6" *ngFor="let p of produits">
+          <div class="form-check mb-3">
+            <input class="form-check-input" type="checkbox"
+                   [value]="p.id"
+                   [checked]="isProduitSelected(p.id)"
+                   [id]="'produit-' + p.id"
+                   (change)="onProduitChange($event, p.id)">
+            <label class="form-check-label" [for]="'produit-' + p.id">
+              {{ p.nom }}
+              <span class="text-muted d-block small">Prix: {{ p.prix | currency:'EUR' }}</span>
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="selectedProduitsCount > 0" class="text-success small mt-2">
+    {{ selectedProduitsCount }} produit(s) sélectionné(s) - Total: {{ calculateTotalPrice() | currency:'EUR' }}
+  </div>
+</div>
+
+<!-- Puis ta section photo en dehors de ce div -->
+<div class="col-12">
+  <label class="form-label fw-semibold">Photo du pack</label>
+  <input type="file" class="form-control" accept="image/*" (change)="onFileSelected($event)" />
+  <div *ngIf="packForm.get('photo')?.invalid && packForm.get('photo')?.touched" class="text-danger small">
+    La photo est obligatoire {{ mode === 'ajout' ? '' : ' (optionnelle pour la modification)' }}
+  </div>
+
+  <div *ngIf="mode === 'edit' && packToEdit" class="mt-2">
+    <img [src]="getPhotoUrl(packToEdit.photo) || ''" alt="Photo actuelle" style="max-height: 100px;" class="img-thumbnail">
+
+    <p class="small text-muted mt-1">Photo actuelle</p>
+  </div>
+</div>
+
+
+  <div class="col-12">
+    <button type="submit" class="btn btn-success px-4" [disabled]="packForm.invalid">
+      <i class="fas fa-save me-2"></i>
+      {{ mode === 'ajout' ? 'Créer le pack' : 'Modifier le pack' }}
+    </button>
+    <button type="button" class="btn btn-outline-secondary ms-2" routerLink="/packs">
+      Annuler
+    </button>
+  </div>
+</form>

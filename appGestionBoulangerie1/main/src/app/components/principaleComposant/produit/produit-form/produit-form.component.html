@@ -1,0 +1,50 @@
+<div class="container mt-5">
+  <h3>{{ mode === 'ajout' ? 'Ajouter un produit' : 'Modifier le produit' }}</h3>
+
+  <form (ngSubmit)="soumettreFormulaire()">
+    <!-- Nom -->
+    <div class="mb-3">
+      <label>Nom</label>
+      <input type="text" class="form-control" [(ngModel)]="produit.nom" name="nom" required>
+    </div>
+
+    <!-- Description -->
+    <div class="mb-3">
+      <label>Description</label>
+      <textarea class="form-control" [(ngModel)]="produit.description" name="description"></textarea>
+    </div>
+
+    <!-- Prix -->
+    <div class="mb-3">
+      <label>Prix</label>
+      <input type="number" class="form-control" [(ngModel)]="produit.prix" name="prix" required>
+    </div>
+
+    <!-- Stock -->
+    <div class="mb-3">
+      <label>Stock</label>
+      <input type="number" class="form-control" [(ngModel)]="produit.stock" name="stock" required>
+    </div>
+
+   <div class="mb-3">
+  <label>Catégorie</label>
+  <select class="form-control" [(ngModel)]="produit.categorie_id" name="categorie_id" required>
+    <option *ngFor="let c of categories" [value]="c.id">{{ c.nom }}</option>
+  </select>
+</div>
+
+    <!-- Allergènes -->
+    <div class="mb-3">
+      <label>Allergènes (séparés par des virgules)</label>
+      <input type="text" class="form-control" [(ngModel)]="allergenesInput" name="allergenes">
+    </div>
+
+    <!-- Photo (upload fichier) -->
+    <div class="mb-3">
+      <label>Photo</label>
+      <input type="file" class="form-control" (change)="onFileSelected($event)">
+    </div>
+
+    <button type="submit" class="btn btn-success">{{ mode === 'ajout' ? 'Ajouter' : 'Modifier' }}</button>
+  </form>
+</div>

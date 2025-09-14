@@ -1,0 +1,77 @@
+<div class="client-dashboard">
+  <!-- En-tête du tableau de bord -->
+  <div class="dashboard-header">
+    <h1>Mon Tableau de Bord</h1>
+    <p>Bienvenue dans votre espace client</p>
+  </div>
+
+  <!-- Section des commandes -->
+  <div class="commandes-section">
+    <h2>Mes Commandes</h2>
+
+    <div *ngIf="commandes.length === 0" class="empty-state">
+      <mat-icon>shopping_basket</mat-icon>
+      <p>Aucune commande pour le moment</p>
+      <button mat-raised-button color="primary" routerLink="/produits">
+        Découvrir nos produits
+      </button>
+    </div>
+
+    <div *ngIf="commandes.length > 0" class="commandes-grid">
+      <div *ngFor="let commande of commandes" class="commande-card" [class]="getStatusClass(commande.statut)">
+        <div class="card-header">
+          <div class="card-title">Commande #{{commande.id}}</div>
+          <div class="card-subtitle">Du {{commande.created_at | date:'dd/MM/yyyy'}}</div>
+          <div class="status-badge">{{getStatusLabel(commande.statut)}}</div>
+        </div>
+
+        <div class="card-content">
+          <div class="commande-details">
+            <div class="total">Total: {{commande.total | currency:'EUR'}}</div>
+
+            <div class="produits-list">
+              <div *ngFor="let detail of commande.detail_commandes" class="produit-item">
+                <span class="quantite">{{detail.quantite}}x</span>
+                <span class="nom">{{detail.produit?.nom || 'Produit'}}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-actions">
+          <button mat-button (click)="voirDetails(commande.id)">DÉTAILS</button>
+          <button *ngIf="commande.facture" mat-button (click)="telechargerFacture(commande.facture.id)">
+            <mat-icon>receipt</mat-icon> FACTURE
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+  <!-- Section du panier récent -->
+  <div *ngIf="panierItems.length > 0" class="panier-section">
+    <h2>Votre panier récent</h2>
+
+    <div class="panier-card">
+      <div class="card-content">
+        <div *ngFor="let item of panierItems" class="panier-item">
+          <div class="item-info">
+            <span class="nom">{{item.produit?.nom || item.pack?.nom}}</span>
+            <span class="quantite">Quantité: {{item.quantite}}</span>
+          </div>
+          <span class="prix">{{item.prix_unitaire * item.quantite | currency:'EUR'}}</span>
+        </div>
+
+        <div class="panier-total">
+          Total: {{calculerTotalPanier() | currency:'EUR'}}
+        </div>
+      </div>
+
+      <div class="card-actions">
+        <button mat-raised-button color="primary" routerLink="/panier">VOIR MON PANIER</button>
+      </div>
+    </div>
+  </div>
+</div>

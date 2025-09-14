@@ -1,0 +1,102 @@
+<div class="admin-container">
+  <h2>Gestion des Factures</h2>
+
+  <!-- Filtres -->
+  <div class="filters-card">
+    <h3>Filtres</h3>
+    <div class="filter-row">
+      <div class="filter-group">
+        <label for="numeroFilter">Numéro de facture:</label>
+        <input type="text" id="numeroFilter" [(ngModel)]="filterNumero" placeholder="Rechercher par numéro">
+      </div>
+
+      <div class="filter-group">
+        <label for="clientFilter">Client:</label>
+        <input type="text" id="clientFilter" [(ngModel)]="filterClient" placeholder="Rechercher par client">
+      </div>
+    </div>
+
+    <div class="filter-row">
+      <div class="filter-group">
+        <label for="dateDebut">Date début:</label>
+        <input type="date" id="dateDebut" [(ngModel)]="filterDateDebut">
+      </div>
+
+      <div class="filter-group">
+        <label for="dateFin">Date fin:</label>
+        <input type="date" id="dateFin" [(ngModel)]="filterDateFin">
+      </div>
+
+      <button class="btn btn-secondary" (click)="loadFactures()">Actualiser</button>
+    </div>
+  </div>
+
+  <!-- Statistiques -->
+  <div class="stats-card">
+    <div class="stat-item">
+      <span class="stat-label">Total des factures:</span>
+      <span class="stat-value">{{filteredFactures.length}}</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-label">Montant total:</span>
+      <span class="stat-value">{{totalAmount | currency:'EUR':'symbol':'1.2-2'}}</span>
+    </div>
+  </div>
+
+  <!-- Liste des factures -->
+  <div class="card">
+    <h3>Liste des Factures</h3>
+
+    <div class="table-container" *ngIf="!isLoading; else loading">
+      <table class="facture-table">
+        <thead>
+          <tr>
+            <th>Numéro</th>
+            <th>Date</th>
+            <th>Client</th>
+            <th>Montant</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let facture of paginatedFactures"
+              [class.selected]="selectedFacture?.id === facture.id"
+              (click)="selectFacture(facture)">
+            <td>{{facture.numero_facture}}</td>
+            <td>{{facture.date_emission | date:'dd/MM/yyyy'}}</td>
+            <td>{{facture.commande?.user?.name || 'N/A'}}</td>
+            <td>{{facture.montant_total | currency:'EUR':'symbol':'1.2-2'}}</td>
+                <td>
+                <button class="btn btn-primary" [routerLink]="['/admin/facture/adminDetail', facture.id]">
+                    <i class="fas fa-eye me-2"></i> Voir la facture
+                 </button>
+
+
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- Pagination -->
+      <div class="pagination" *ngIf="totalPages > 1">
+        <button (click)="changePage(currentPage - 1)" [disabled]="currentPage === 1">Précédent</button>
+
+        <span *ngFor="let page of pageNumbers"
+              [class.active]="page === currentPage"
+              (click)="changePage(page)">
+          {{page}}
+        </span>
+
+        <button (click)="changePage(currentPage + 1)" [disabled]="currentPage === totalPages">Suivant</button>
+      </div>
+    </div>
+
+    <ng-template #loading>
+      <div class="loading">Chargement des factures...</div>
+    </ng-template>
+  </div>
+  <!-- Message d'erreur -->
+  <div class="error-message" *ngIf="errorMessage">
+    {{errorMessage}}
+  </div>
+</div>

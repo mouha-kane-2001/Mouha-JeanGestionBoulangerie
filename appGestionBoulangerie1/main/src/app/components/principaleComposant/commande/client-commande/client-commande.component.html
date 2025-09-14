@@ -1,0 +1,139 @@
+<div class="container mt-4">
+  <h2 class="mb-4 border-bottom pb-3">Mes Commandes</h2>
+
+  <div class="card shadow-sm border-0">
+    <div class="card-header bg-white py-3">
+      <div class="d-flex justify-content-between align-items-center flex-wrap">
+        <h5 class="mb-2 mb-md-0">
+          <i class="fas fa-history text-primary me-2"></i>Historique des commandes
+        </h5>
+        <div class="d-flex gap-2">
+          <div class="input-group input-group-sm" style="width: 200px;">
+            <span class="input-group-text bg-light border-end-0">
+              <i class="fas fa-search text-muted"></i>
+            </span>
+            <input type="text" class="form-control border-start-0" placeholder="Rechercher...">
+          </div>
+          <div class="dropdown">
+            <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+              <i class="fas fa-filter me-1"></i>Statut
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end">
+              <li><a class="dropdown-item" href="#">Toutes les commandes</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" href="#">En attente</a></li>
+              <li><a class="dropdown-item" href="#">En préparation</a></li>
+              <li><a class="dropdown-item" href="#">Prêtes</a></li>
+              <li><a class="dropdown-item" href="#">En livraison</a></li>
+              <li><a class="dropdown-item" href="#">Livrées</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+          <thead class="table-light">
+            <tr>
+              <th class="ps-4">Référence</th>
+              <th>Date</th>
+              <th>Montant</th>
+              <th>Statut</th>
+              <th>Paiement</th>
+              <th class="text-center pe-4">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let commande of commandes" class="border-bottom">
+              <td class="ps-4 fw-bold text-primary">#{{ commande.id }}</td>
+              <td>{{ commande.created_at | date:'dd/MM/yyyy' }}</td>
+              <td class="fw-bold">{{ commande.total | number }} FCFA</td>
+              <td>
+                <span class="badge rounded-pill py-2 px-3"
+                  [ngClass]="{
+                    'bg-warning text-dark': commande.statut === 'en_attente',
+                    'bg-info': commande.statut === 'en_preparation',
+                    'bg-primary': commande.statut === 'prete',
+                    'bg-primary bg-opacity-75': commande.statut === 'en_livraison',
+                    'bg-success': commande.statut === 'livree'
+                  }">
+                  <i class="fas {{ getStatutIcon(commande.statut) }} me-1"></i>
+                  {{ getStatutText(commande.statut) }}
+                </span>
+              </td>
+              <td>
+                <span class="badge bg-secondary bg-opacity-25 text-white rounded-pill py-2 px-3">
+                  <i class="fas {{ getPaymentIcon(commande.mode_paiement) }} me-1"></i>
+                  {{ getModePaiementText(commande.mode_paiement) }}
+                </span>
+              </td>
+              <td class="text-center pe-4">
+                <div class="btn-group btn-group-sm" role="group">
+                  <button type="button" class="btn btn-outline-primary rounded-start"         [routerLink]="['/client/commande/detail', commande.id]">
+
+                    <i class="fas fa-eye me-1"></i> Détails
+                  </button>
+                  <button type="button" class="btn btn-outline-success rounded-end" (click)="showAlert('Téléchargement de la facture #' + commande.id)">
+                    <i class="fas fa-file-invoice me-1"></i> Facture
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Message si aucune commande -->
+      <div *ngIf="commandes.length === 0" class="text-center py-5">
+        <div class="py-4">
+          <i class="fas fa-shopping-bag fa-4x text-light mb-4"></i>
+          <h5 class="text-muted mb-2">Aucune commande trouvée</h5>
+          <p class="text-muted mb-4">Vous n'avez pas encore passé de commande.</p>
+          <button class="btn btn-primary px-4">
+            <i class="fas fa-store me-2"></i>Découvrir nos produits
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-footer bg-light py-3" *ngIf="commandes.length > 0">
+      <div class="d-flex justify-content-between align-items-center flex-wrap">
+        <div class="text-muted">Affichage de {{commandes.length}} commande(s)</div>
+        <nav>
+          <ul class="pagination pagination-sm mb-0">
+            <li class="page-item disabled">
+              <a class="page-link" href="#">
+                <i class="fas fa-chevron-left"></i>
+              </a>
+            </li>
+            <li class="page-item active"><a class="page-link" href="#">1</a></li>
+            <li class="page-item"><a class="page-link" href="#">2</a></li>
+            <li class="page-item"><a class="page-link" href="#">3</a></li>
+            <li class="page-item">
+              <a class="page-link" href="#">
+                <i class="fas fa-chevron-right"></i>
+              </a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Toast pour les alertes -->
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+  <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+    <div class="toast-header">
+      <i class="fas fa-info-circle text-primary me-2"></i>
+      <strong class="me-auto">Notification</strong>
+      <small>à l'instant</small>
+      <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+    </div>
+    <div class="toast-body">
+      {{ toastMessage }}
+    </div>
+  </div>
+</div>

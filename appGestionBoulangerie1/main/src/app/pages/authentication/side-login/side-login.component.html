@@ -1,0 +1,118 @@
+<div class="login-container">
+  <div class="row h-100 w-100 m-0">
+    <!-- Partie formulaire -->
+    <div class="col-lg-6 col-md-12 d-flex align-items-center justify-content-center p-4">
+      <mat-card class="cardWithShadow boxed-auth">
+        <mat-card-content class="p-4">
+          <div class="text-center mb-4">
+            <h2 class="fw-bold text-primary">Connexion</h2>
+            <p class="text-muted">Accédez à votre espace boulangerie</p>
+          </div>
+
+          <form class="m-t-30" [formGroup]="form" (ngSubmit)="submit()">
+            <mat-label class="f-s-14 f-w-600 m-b-12 d-block">Email</mat-label>
+            <mat-form-field appearance="outline" class="w-100" color="primary">
+              <input matInput formControlName="email" placeholder="Votre adresse email" />
+              <mat-icon matSuffix>email</mat-icon>
+            </mat-form-field>
+
+            <mat-label class="f-s-14 f-w-600 m-b-12 d-block">Mot de passe</mat-label>
+            <mat-form-field appearance="outline" class="w-100" color="primary">
+              <input matInput type="password" formControlName="password" placeholder="Votre mot de passe" />
+              <mat-icon matSuffix>lock</mat-icon>
+            </mat-form-field>
+
+            <div class="d-flex justify-content-between align-items-center mb-4">
+              <mat-checkbox>Se souvenir de moi</mat-checkbox>
+              <a href="#" class="text-primary text-decoration-none">Mot de passe oublié?</a>
+            </div>
+
+            <button mat-flat-button color="primary" class="w-100 py-2" type="submit" [disabled]="!form.valid">
+              Se connecter
+            </button>
+
+            <div class="text-center mt-3">
+              <p class="text-muted">Vous n'avez pas de compte? <a routerLink="/inscription" class="text-primary text-decoration-none">Créer un compte</a></p>
+            </div>
+          </form>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <!-- Partie image de boulangerie -->
+    <div class="col-lg-6 d-none d-lg-block p-0">
+      <div class="baker-image-container">
+        <div class="overlay"></div>
+        <div class="image-content">
+          <h3 class="text-white">Bienvenue chez</h3>
+          <h2 class="text-white display-4 fw-bold">La Boulangerie Française</h2>
+          <p class="text-white">L'art traditionnel de la boulangerie depuis 1985</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+.login-container {
+  height: 100vh;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+}
+
+.cardWithShadow {
+  border-radius: 12px !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1) !important;
+  border: none;
+  width: 100%;
+  max-width: 450px;
+}
+
+.baker-image-container {
+  height: 100%;
+  background: url('https://images.unsplash.com/photo-1509440159596-0249088772ff?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MjB8fGJha2VyeXxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=1200&q=80') center center/cover no-repeat;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to right, rgba(121, 85, 72, 0.7), rgba(78, 52, 46, 0.8));
+}
+
+.image-content {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  padding: 20px;
+}
+
+.mat-form-field {
+  margin-bottom: 1.5rem;
+}
+
+button[mat-flat-button] {
+  font-size: 16px;
+  font-weight: 600;
+  height: 48px;
+}
+
+.text-primary {
+  color: #7b1fa2 !important;
+}
+
+.mat-flat-button.mat-primary {
+  background-color: #7b1fa2;
+}
+
+@media (max-width: 992px) {
+  .login-container {
+    padding: 20px;
+  }
+}
+</style>

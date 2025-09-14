@@ -1,0 +1,374 @@
+<div class="support-container">
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <h3><mat-icon>forum</mat-icon> Mes Conversations</h3>
+      <button mat-flat-button color="primary" (click)="createConversation()" class="btn-new">
+        <mat-icon>add</mat-icon> Nouvelle
+      </button>
+    </div>
+
+    <div class="search-box">
+      <mat-icon>search</mat-icon>
+      <input type="text" placeholder="Rechercher une conversation..." #searchInput>
+    </div>
+
+    <mat-list class="conversation-list">
+      <mat-list-item
+        *ngFor="let conv of conversations"
+        (click)="openConversation(conv)"
+        [class.active]="conv === selectedConversation"
+        class="conversation-item"
+      >
+        <div matListItemAvatar class="avatar">{{ conv.user.prenom[0] }}{{ conv.user.nom[0] }}</div>
+
+        <div matListItemTitle class="conversation-title">{{ conv.sujet || 'Sans sujet' }}</div>
+        <div matListItemLine class="conversation-user">{{ conv.user.prenom }} {{ conv.user.nom }}</div>
+
+        <div matListItemMeta>
+          <span class="status-badge" [ngClass]="'status-' + conv.statut.toLowerCase()">
+            {{ conv.statut }}
+          </span>
+          <span class="time">14:30</span>
+        </div>
+      </mat-list-item>
+    </mat-list>
+
+    <div class="new-conversation">
+     <mat-form-field appearance="outline" class="full-width">
+  <mat-label>Nouveau sujet</mat-label>
+  <input matInput [(ngModel)]="newSujet" placeholder="Sujet de la conversation...">
+</mat-form-field>
+      <button mat-flat-button color="primary" (click)="createConversation()">Créer</button>
+    </div>
+  </div>
+
+  <div class="chat-box" *ngIf="selectedConversation">
+    <div class="chat-header">
+      <div class="chat-info">
+        <h3>{{ selectedConversation.sujet || 'Sans sujet' }}</h3>
+        <p>{{ selectedConversation.user.prenom }} {{ selectedConversation.user.nom }} •
+          <span class="status-text" [ngClass]="'status-' + selectedConversation.statut.toLowerCase()">
+            {{ selectedConversation.statut }}
+          </span>
+        </p>
+      </div>
+      <div class="chat-actions">
+        <button mat-icon-button><mat-icon>call</mat-icon></button>
+        <button mat-icon-button><mat-icon>videocam</mat-icon></button>
+        <button mat-icon-button><mat-icon>more_vert</mat-icon></button>
+      </div>
+    </div>
+
+    <div class="messages">
+      <div *ngFor="let msg of messages" [ngClass]="'message ' + msg.type">
+        <div class="avatar" *ngIf="msg.type === 'client'">
+          {{ selectedConversation.user.prenom[0] }}{{ selectedConversation.user.nom[0] }}
+        </div>
+        <div class="avatar" *ngIf="msg.type === 'employe'">BLG</div>
+
+        <div class="message-content">
+          <div class="message-header">
+            <strong>{{ msg.type === 'client' ? (selectedConversation.user.prenom + ' ' + selectedConversation.user.nom) : 'Boulangerie' }}</strong>
+            <span class="message-time">{{ msg.date | date:'HH:mm' }}</span>
+          </div>
+          <p>{{ msg.contenu }}</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="input-box">
+      <div class="input-tools">
+        <button mat-icon-button><mat-icon>attach_file</mat-icon></button>
+        <button mat-icon-button><mat-icon>mood</mat-icon></button>
+      </div>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <input matInput [(ngModel)]="newMessage" placeholder="Votre message..." (keyup.enter)="sendMessage()">
+      </mat-form-field>
+
+      <button mat-flat-button color="primary" (click)="sendMessage()" class="btn-send">
+        <mat-icon>send</mat-icon>
+      </button>
+    </div>
+  </div>
+</div>
+
+<style>
+.support-container {
+  display: flex;
+  height: 100vh;
+  background-color: #f5f7f9;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+/* Sidebar Styles */
+.sidebar {
+  width: 350px;
+  background-color: white;
+  border-right: 1px solid #e1e4e8;
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  border-bottom: 1px solid #e1e4e8;
+}
+
+.sidebar-header h3 {
+  color: #2c3e50;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+}
+
+.search-box {
+  position: relative;
+  padding: 16px;
+  border-bottom: 1px solid #e1e4e8;
+}
+
+.search-box mat-icon {
+  position: absolute;
+  left: 28px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #7f8c8d;
+  font-size: 20px;
+}
+
+.search-box input {
+  width: 100%;
+  padding: 10px 10px 10px 40px;
+  border: 1px solid #e1e4e8;
+  border-radius: 20px;
+  font-size: 14px;
+}
+
+.conversation-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0;
+}
+
+.conversation-item {
+  border-bottom: 1px solid #f1f2f6;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.conversation-item:hover {
+  background-color: #f8f9fa;
+}
+
+.conversation-item.active {
+  background-color: #e8f4fd;
+}
+
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: #3498db;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  margin-right: 16px;
+  flex-shrink: 0;
+}
+
+.conversation-title {
+  font-size: 14px;
+  font-weight: 500;
+  color: #2c3e50;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.conversation-user {
+  font-size: 13px;
+  color: #7f8c8d;
+}
+
+.status-badge {
+  font-size: 11px;
+  padding: 4px 8px;
+  border-radius: 10px;
+  font-weight: 500;
+  margin-right: 8px;
+}
+
+.status-en-cours, .status-actif {
+  background-color: #e1f4fd;
+  color: #3498db;
+}
+
+.status-nouveau, .status-nouvelle {
+  background-color: #ffeaa7;
+  color: #d35400;
+}
+
+.status-en-attente {
+  background-color: #f8e5e5;
+  color: #e74c3c;
+}
+
+.status-résolu, .status-resolu {
+  background-color: #e5f7ee;
+  color: #27ae60;
+}
+
+.time {
+  font-size: 12px;
+  color: #95a5a6;
+}
+
+.new-conversation {
+  display: flex;
+  padding: 16px;
+  border-top: 1px solid #e1e4e8;
+  gap: 10px;
+  align-items: center;
+}
+
+.full-width {
+  width: 100%;
+}
+
+/* Chat Box Styles */
+.chat-box {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background-color: white;
+  margin: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+}
+
+.chat-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 24px;
+  border-bottom: 1px solid #e1e4e8;
+}
+
+.chat-info h3 {
+  color: #2c3e50;
+  font-size: 18px;
+  margin-bottom: 4px;
+  font-weight: 500;
+}
+
+.chat-info p {
+  color: #7f8c8d;
+  font-size: 14px;
+  margin: 0;
+}
+
+.chat-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.messages {
+  flex: 1;
+  padding: 24px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.message {
+  display: flex;
+  max-width: 80%;
+}
+
+.message.client {
+  align-self: flex-start;
+}
+
+.message.employe {
+  align-self: flex-end;
+}
+
+.message-content {
+  margin-left: 12px;
+  background-color: #f8f9fa;
+  padding: 12px 16px;
+  border-radius: 8px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.message.employe .message-content {
+  background-color: #e1f4fd;
+}
+
+.message-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.message-header strong {
+  font-size: 14px;
+  color: #2c3e50;
+  font-weight: 500;
+}
+
+.message-time {
+  font-size: 12px;
+  color: #95a5a6;
+}
+
+.message-content p {
+  font-size: 14px;
+  color: #34495e;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.input-box {
+  display: flex;
+  align-items: center;
+  padding: 16px 24px;
+  border-top: 1px solid #e1e4e8;
+  gap: 8px;
+}
+
+.input-tools {
+  display: flex;
+  gap: 4px;
+}
+
+.btn-send {
+  margin-left: 8px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .support-container {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    width: 100%;
+    height: 40vh;
+  }
+
+  .chat-box {
+    margin: 10px;
+  }
+}
+</style>

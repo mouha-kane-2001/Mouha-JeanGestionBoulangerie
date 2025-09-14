@@ -1,0 +1,16 @@
+# Node
+node_modules/
+package-lock.json
+
+# Angular build
+/dist
+/out-tsc
+/.angular
+
+# IDE / OS
+.vscode/
+*.log
+.DS_Store
+
+# Autres fichiers temporaires
+npm-debug.log*

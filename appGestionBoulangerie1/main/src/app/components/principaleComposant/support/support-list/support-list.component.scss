@@ -1,0 +1,9 @@
+.support-list { padding: 12px; }
+.header { display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; }
+.conv-item { cursor:pointer; border-radius:6px; }
+.conv-item:hover { background: rgba(0,0,0,0.03); }
+.conv-sub { display:flex; gap:8px; align-items:center; width:100%; }
+.spacer { flex:1 1 auto; }
+.muted { color: #666; font-size: 13px; }
+.empty { color:#555; padding: 12px 0; }
+.badge { margin-left:8px; }

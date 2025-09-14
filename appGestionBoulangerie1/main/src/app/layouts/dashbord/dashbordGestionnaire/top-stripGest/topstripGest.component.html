@@ -1,0 +1,29 @@
+<div class="app-topstrip bg-dark text-white p-y-16 p-x-24 w-100 d-flex align-items-center justify-content-between">
+    <div class="d-none d-sm-flex align-items-center justify-content-center gap-20">
+
+
+        <div class="linkbar d-none d-lg-flex align-items-center justify-content-center gap-16">
+            <!-- Templates -->
+            <a mat-button class="link-hover p-x-0 text-white d-flex  "routerLink="/gestionnaire/commande/gestionnaire"
+                target="_blank">
+                <div class="d-flex align-items-center gap-8 f-s-16 f-w-400">
+                    <i class="iconify icon-20 d-flex" data-icon="solar:window-frame-linear"></i>
+                    Gestion Commande
+                </div>
+            </a>
+
+            <!-- Support -->
+            <a mat-button class="link-hover p-x-0 text-white d-flex" routerLink="/gestionnaire/conversation"
+                target="_blank">
+                <div class="d-flex align-items-center gap-8 f-s-16 f-w-400">
+                    <i class="iconify icon-20 d-flex" data-icon="solar:question-circle-linear"></i>
+                   Gestion Conversation
+                </div>
+            </a>
+
+        </div>
+    </div>
+<button class="btn btn-outline-primary" (click)="modifierProfil()">
+  <i class="bi bi-pencil me-1"></i> Modifier mon profil
+</button>
+</div>

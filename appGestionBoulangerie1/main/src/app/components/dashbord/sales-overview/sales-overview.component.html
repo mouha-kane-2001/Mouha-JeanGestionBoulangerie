@@ -1,0 +1,98 @@
+<div class="container">
+<div class="admin-dashboard">
+  <!-- En-tête -->
+  <div class="dashboard-header">
+    <h1>Tableau de Bord Administrateur</h1>
+
+  </div>
+
+  <!-- Indicateur de chargement -->
+  <div *ngIf="isLoading" class="loading-container">
+    <mat-spinner diameter="50"></mat-spinner>
+    <p>Chargement des données...</p>
+  </div>
+
+  <mat-card class="cardWithShadow">
+    <mat-card-content>
+      <div class="d-flex w-100">
+        <mat-card-title>Sales Overview</mat-card-title>
+        <div class="m-l-auto">
+          <mat-form-field class="theme-select" appearance="outline">
+            <mat-select [(value)]="selectedMonth">
+              <mat-option *ngFor="let month of months" [value]="month.value">
+                {{ month.viewValue }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <!-- Graphique avec initialisation conditionnelle -->
+      <div *ngIf="chartInitialized; else loadingTemplate">
+        <apx-chart
+          [series]="salesOverviewChart.series"
+          [dataLabels]="salesOverviewChart.dataLabels"
+          [chart]="salesOverviewChart.chart"
+          [legend]="salesOverviewChart.legend"
+          [xaxis]="salesOverviewChart.xaxis"
+          [yaxis]="salesOverviewChart.yaxis"
+          [grid]="salesOverviewChart.grid"
+          [stroke]="salesOverviewChart.stroke"
+          [tooltip]="salesOverviewChart.tooltip"
+          [plotOptions]="salesOverviewChart.plotOptions">
+        </apx-chart>
+      </div>
+
+      <ng-template #loadingTemplate>
+        <div class="loading-container">
+          <mat-spinner diameter="40"></mat-spinner>
+          <p>Chargement des données...</p>
+        </div>
+      </ng-template>
+    </mat-card-content>
+  </mat-card>
+</div>
+
+<!-- Styles pour le composant -->
+<style>
+.container {
+  padding: 16px;
+}
+
+.cardWithShadow {
+  box-shadow: 0px 2px 10px -1px rgba(0, 0, 0, 0.2),
+              0px 1px 1px 0px rgba(0, 0, 0, 0.14),
+              0px 1px 3px 0px rgba(0, 0, 0, 0.12);
+  border-radius: 8px;
+}
+
+.d-flex {
+  display: flex;
+  align-items: center;
+}
+
+.w-100 {
+  width: 100%;
+}
+
+.m-l-auto {
+  margin-left: auto;
+}
+
+.theme-select {
+  width: 150px;
+}
+
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 300px;
+  color: #666;
+}
+
+.loading-container p {
+  margin-top: 16px;
+}
+</style>

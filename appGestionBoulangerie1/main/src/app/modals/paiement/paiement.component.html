@@ -1,0 +1,33 @@
+<div class="modal-backdrop" *ngIf="showModal">
+
+</div>
+<div class="modal d-block" *ngIf="showModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Paiement en ligne</h5>
+        <button type="button" class="btn-close" (click)="fermer()"></button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="mb-3">
+            <label>Numéro de carte</label>
+            <input type="text" class="form-control" [(ngModel)]="numeroCarte" name="numeroCarte">
+          </div>
+          <div class="mb-3">
+            <label>MM/AA</label>
+            <input type="text" class="form-control" [(ngModel)]="dateExpiration" name="dateExpiration">
+          </div>
+          <div class="mb-3">
+            <label>CVV</label>
+            <input type="text" class="form-control" [(ngModel)]="cvv" name="cvv">
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" (click)="fermer()">Annuler</button>
+        <button class="btn btn-primary" (click)="payerEnLigne()">Payer</button>
+      </div>
+    </div>
+  </div>
+</div>

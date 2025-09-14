@@ -1,0 +1,58 @@
+<!-- src/app/components/suggestion-chat/suggestion-chat.component.html -->
+<div class="suggestion-chat-container">
+  <div class="chat-header">
+    <div class="header-content">
+      <mat-icon>lightbulb</mat-icon>
+      <h2>Assistant Suggestions</h2>
+      <span class="status-indicator online">● Actif</span>
+    </div>
+    <button mat-icon-button class="close-btn" (click)="resetConversation()" title="Réinitialiser">
+      <mat-icon>refresh</mat-icon>
+    </button>
+  </div>
+
+  <div class="chat-messages" #messageContainer>
+    <div *ngFor="let message of messages" class="message"
+         [class.client]="message.sender === 'client'"
+         [class.assistant]="message.sender === 'assistant'"
+         [class.suggestion]="message.isSuggestion">
+
+      <div class="message-avatar">
+        <mat-icon *ngIf="message.sender === 'assistant'">lightbulb</mat-icon>
+        <mat-icon *ngIf="message.sender === 'client'">person</mat-icon>
+      </div>
+
+      <div class="message-content">
+        <div class="message-text">{{message.content}}</div>
+        <div class="message-time">{{message.timestamp | date:'HH:mm'}}</div>
+      </div>
+    </div>
+
+    <div *ngIf="isGeneratingSuggestion" class="generating-indicator">
+      <div class="generating-content">
+        <mat-icon>auto_awesome</mat-icon>
+        <span>Génération de suggestions...</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="predefined-suggestions" *ngIf="showPredefinedSuggestions">
+    <div class="suggestion-title">Questions fréquentes:</div>
+    <div class="suggestion-chips">
+      <button mat-button *ngFor="let suggestion of getPredefinedSuggestions()"
+              (click)="selectPredefinedSuggestion(suggestion)">
+        {{suggestion}}
+      </button>
+    </div>
+  </div>
+
+  <div class="chat-input">
+    <input #messageInput type="text" placeholder="Posez votre question..."
+           [(ngModel)]="newMessage" (keyup.enter)="sendMessage()">
+    <button mat-raised-button color="primary" class="send-btn"
+            [disabled]="!newMessage.trim() || isGeneratingSuggestion"
+            (click)="sendMessage()">
+      <mat-icon>send</mat-icon>
+    </button>
+  </div>
+</div>

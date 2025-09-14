@@ -1,0 +1,88 @@
+<div class="card p-4">
+  <h2 class="mb-4">Liste des promotions</h2>
+  <a routerLink="/admin/promotions/ajouter" class="btn btn-success">
+      <i class="fas fa-plus-circle me-1"></i>Ajouter un produit
+    </a>
+
+  <p *ngIf="loading" class="text-center p-3">Chargement en cours...</p>
+  <p class="alert alert-danger" *ngIf="errorMessage">{{ errorMessage }}</p>
+
+  <div *ngIf="!loading && promotions.length > 0">
+    <div *ngFor="let promo of promotions" class="mb-4 border-0 p-4 rounded shadow-sm promo-card">
+      <div class="d-flex justify-content-between align-items-start mb-3">
+        <div>
+          <h4 class="text-primary mb-1">{{ promo.nom }}</h4>
+          <p class="text-muted mb-2">{{ promo.description }}</p>
+          <div class="d-flex align-items-center text-muted small">
+            <i class="fas fa-calendar-alt me-1"></i>
+            <span>Du {{ promo.date_debut | date:'dd/MM/yyyy' }} au {{ promo.date_fin | date:'dd/MM/yyyy' }}</span>
+          </div>
+        </div>
+        <div class="badge bg-success fs-6 p-2">
+          {{ promo.type_reduction === 'pourcentage' ? (promo.valeur_reduction + '%') : (promo.valeur_reduction + '€') }} de réduction
+        </div>
+      </div>
+
+      <div class="row g-3">
+        <div class="col-xl-3 col-lg-4 col-md-6 mb-3" *ngFor="let produit of promo.produits">
+          <div class="card h-100 product-card">
+            <div class="image-container" style="height: 200px; overflow: hidden;">
+              <img *ngIf="produit.photo; else noPhoto"
+                   [src]="produit.photo"
+                   class="card-img-top h-100"
+                   alt="{{ produit.nom }}"
+                   style="object-fit: cover; width: 100%;">
+              <ng-template #noPhoto>
+                <div class="d-flex justify-content-center align-items-center h-100 bg-light">
+                  <i class="fas fa-image fa-2x text-secondary"></i>
+                </div>
+              </ng-template>
+            </div>
+            <div class="card-body">
+              <h6 class="card-title text-truncate">{{ produit.nom }}</h6>
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <span class="text-muted text-decoration-line-through small">
+                  {{ produit.prix | currency:'EUR' }}
+                </span>
+                <span class="fw-bold text-success fs-5">
+                  <ng-container *ngIf="promo.type_reduction === 'pourcentage'; else montantReduction">
+                    {{ produit.prix * (1 - promo.valeur_reduction / 100) | currency:'EUR' }}
+                  </ng-container>
+                  <ng-template #montantReduction>
+                    {{ produit.prix - promo.valeur_reduction | currency:'EUR' }}
+                  </ng-template>
+                </span>
+              </div>
+              <div class="d-flex justify-content-between align-items-center">
+                <span class="badge bg-info">
+                  Économisez
+                  <ng-container *ngIf="promo.type_reduction === 'pourcentage'; else montantEconomie">
+                    {{ produit.prix * promo.valeur_reduction / 100 | currency:'EUR' }}
+                  </ng-container>
+                  <ng-template #montantEconomie>
+                    {{ promo.valeur_reduction | currency:'EUR' }}
+                  </ng-template>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="d-flex justify-content-end mt-3 pt-2 border-top">
+        <button class="btn btn-outline-primary btn-sm me-2" (click)="editPromotion(promo)">
+          <i class="fas fa-edit me-1"></i> Modifier
+        </button>
+        <button class="btn btn-outline-danger btn-sm" (click)="deletePromotion(promo.id)">
+          <i class="fas fa-trash me-1"></i> Supprimer
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="!loading && promotions.length === 0" class="text-center py-5">
+    <i class="fas fa-tags fa-3x text-muted mb-3"></i>
+    <h4 class="text-muted">Aucune promotion disponible</h4>
+    <p class="text-muted">Revenez plus tard pour découvrir nos offres spéciales</p>
+  </div>
+</div>
