@@ -1,0 +1,39 @@
+# ================================
+# IGNORE SPÉCIFIQUE AUX SOUS-DOSSIERS
+# ================================
+
+# Backend - api-gestionBoulangerie
+api-gestionBoulangerie/vendor/
+api-gestionBoulangerie/.env
+api-gestionBoulangerie/.env.local
+api-gestionBoulangerie/.env.production
+api-gestionBoulangerie/storage/framework/cache/
+api-gestionBoulangerie/storage/framework/sessions/
+api-gestionBoulangerie/storage/framework/views/
+api-gestionBoulangerie/storage/logs/
+api-gestionBoulangerie/bootstrap/cache/
+api-gestionBoulangerie/public/hot
+api-gestionBoulangerie/public/storage
+api-gestionBoulangerie/npm-debug.log
+api-gestionBoulangerie/yarn-error.log
+
+# Frontend - appGestionBoulangerie1
+appGestionBoulangerie1/node_modules/
+appGestionBoulangerie1/dist/
+appGestionBoulangerie1/.angular/
+appGestionBoulangerie1/.cache/
+appGestionBoulangerie1/.ng/
+
+  
+
+# ================================
+# IGNORE GLOBAL
+# ================================
+.DS_Store
+Thumbs.db
+*.log
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
